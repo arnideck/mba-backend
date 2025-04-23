@@ -1,0 +1,33 @@
+service: mba-backend-api
+
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  region: us-east-1
+  stage: dev
+  memorySize: 256
+  timeout: 10
+  environment:
+    LARAVEL_API_URL: ${env:LARAVEL_API_URL}
+    LARAVEL_TOKEN: ${env:LARAVEL_TOKEN}
+
+functions:
+  api:
+    handler: handler.handler
+    events:
+      - http:
+          path: /api
+          method: post
+          cors: true
+
+package:
+  exclude:
+    - node_modules/**
+    - .gitignore
+    - .github/**
+    - .env*
+    - src/**
+    - public/**
+
