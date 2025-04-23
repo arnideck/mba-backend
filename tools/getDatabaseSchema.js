@@ -1,9 +1,6 @@
-// tools/getDatabaseSchema.js
-const fs = require("fs");
+import fs from "fs";
 
-function getSchema() {
-  const raw = fs.readFileSync("dicionario_dados_negocio.json");
+export function getSchema() {
+  const raw = fs.readFileSync("dicionario_dados_negocio.json", "utf-8");
   return JSON.parse(raw);
 }
-
-module.exports = { getSchema };

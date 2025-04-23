@@ -30,3 +30,4 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           LARAVEL_API_URL: ${{ secrets.LARAVEL_API_URL }}
           LARAVEL_TOKEN: ${{ secrets.LARAVEL_TOKEN }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
