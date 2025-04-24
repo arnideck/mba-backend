@@ -33,5 +33,5 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Deploy with Serverless
-        run: npm run deploy
+        run: npx serverless deploy
       
