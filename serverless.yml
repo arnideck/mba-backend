@@ -22,3 +22,12 @@ functions:
 
 plugins:
   - serverless-esbuild
+
+custom:
+  esbuild:
+    format: esm
+    target: node20
+    platform: node
+    external:
+      - "@langchain/openai"
+      - "@langchain/core"

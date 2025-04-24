@@ -1,9 +1,8 @@
-// tools/executarSQL.js
-const axios = require("axios");
+import axios from "axios";
 
-async function executarSQL(query) {
+export async function executarSQL({ input }) {
   const resposta = await axios.post(process.env.LARAVEL_API_URL + "/executar-sql", {
-    query,
+    query: input,
   }, {
     headers: {
       Authorization: `Bearer ${process.env.LARAVEL_TOKEN}`
@@ -12,4 +11,3 @@ async function executarSQL(query) {
   return resposta.data;
 }
 
-module.exports = { executarSQL };
