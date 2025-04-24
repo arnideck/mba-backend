@@ -35,6 +35,9 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
+      - name: Ajustar permissão do Serverless CLI
+        run: chmod +x node_modules/.bin/serverless
+      
       - name: Deploy using local Serverless CLI
         run: npx serverless deploy
 
