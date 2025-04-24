@@ -5,9 +5,9 @@
   "description": "BI Conversacional com Lambda, LangChain e OpenAI",
   "type": "module",
   "scripts": {
-    "deploy": "npx serverless deploy",
-    "remove": "npx serverless remove",
-    "package": "npx serverless package"
+    "deploy": "serverless deploy",
+    "remove": "serverless remove",
+    "package": "serverless package"
   },
   "dependencies": {
     "axios": "^1.8.4",
