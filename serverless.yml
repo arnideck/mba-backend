@@ -8,6 +8,7 @@ provider:
   region: us-east-1
   stage: dev
   environment:
+    OPENAI_API_KEY: ${env:OPENAI_API_KEY}
     LARAVEL_API_URL: ${env:LARAVEL_API_URL}
     LARAVEL_TOKEN: ${env:LARAVEL_TOKEN}
 
