@@ -36,7 +36,6 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Deploy with Serverless
-        working-directory: ./mba-backend
         run: npm run deploy
 
       
