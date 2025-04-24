@@ -1,5 +1,5 @@
 import { ChatOpenAI } from "@langchain/openai";
-import { AgentExecutor, createOpenAIToolsAgent } from "langchain/agents";
+import { AgentExecutor, createOpenAIToolsAgent } from "@langchain/core/agents";
 import { executarSQL } from "../tools/executarSql.js";
 import { SchemaInspector } from "../tools/schemaInspector.js";
 

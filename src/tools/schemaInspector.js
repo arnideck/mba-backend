@@ -1,4 +1,4 @@
-import { Tool } from "langchain/tools";
+import { Tool } from "@langchain/core/tools";
 import { getSchema } from "./getDatabaseSchema.js";
 
 export class SchemaInspector extends Tool {
