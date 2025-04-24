@@ -20,19 +20,10 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
-          node-version: '22'
+          node-version: '20'
 
       - name: Install dependencies
         run: npm install
-
-      - name: Ensure Serverless CLI is installed
-        run: npm install serverless
-
-      - name: Install Serverless CLI globally
-        run: npm install -g serverless
-
-      - name: Ensure Serverless CLI is executable
-        run: chmod +x ./node_modules/.bin/serverless
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
