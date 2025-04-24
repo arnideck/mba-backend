@@ -1,0 +1,24 @@
+service: mba-backend
+
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  region: us-east-1
+  stage: dev
+  environment:
+    OPENAI_API_KEY: ${env:OPENAI_API_KEY}
+    LARAVEL_API_URL: ${env:LARAVEL_API_URL}
+    LARAVEL_TOKEN: ${env:LARAVEL_TOKEN}
+
+functions:
+  agent-handler:
+    handler: src/agent/index.handler
+    events:
+      - httpApi:
+          path: /question
+          method: POST
+
+plugins:
+  - serverless-esbuild
