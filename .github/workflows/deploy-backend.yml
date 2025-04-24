@@ -25,6 +25,9 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Ensure Serverless CLI is installed
+        run: npm install serverless
+
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
@@ -33,4 +36,5 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Deploy with Serverless
-        run: npm run deploy
+        run: npx serverless deploy
+
