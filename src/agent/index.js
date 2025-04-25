@@ -1,9 +1,7 @@
 import { ChatOpenAI } from "@langchain/openai";
-import { AgentExecutor } from "@langchain/core/agents/executor";
-import { OpenAIToolsAgent } from "@langchain/core/agents/openai";
+import { AgentExecutor, createOpenAIToolsAgent } from "langchain/agents";
 import { executarSQL } from "../tools/executarSql.js";
 import { SchemaInspector } from "../tools/schemaInspector.js";
-
 
 let executor = null;
 
@@ -16,10 +14,9 @@ export async function handler(event) {
     });
 
     const tools = [executarSQL, new SchemaInspector()];
+    const agent = await createOpenAIToolsAgent({ llm: model, tools });
 
-    const agent = new OpenAIToolsAgent({ llm: model, tools });
-
-    executor = new AgentExecutor({ agent, tools, verbose: true });
+    executor = AgentExecutor.fromAgentAndTools({ agent, tools, verbose: true });
   }
 
   const body = JSON.parse(event.body);
