@@ -20,16 +20,10 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '22'
-
-      - name: Verify Node.js version
-        run: node -v
+          node-version: '20'
 
       - name: Install dependencies
         run: npm install
-
-      - name: Install dependencies 2
-        run: npm ci
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
@@ -40,5 +34,6 @@ jobs:
 
       - name: Deploy with Serverless
         run: npm run deploy
+
 
       

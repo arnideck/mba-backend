@@ -26,6 +26,7 @@ plugins:
 custom:
   esbuild:
     format: esm
+    bundle: true
     target: node20
     platform: node
     external:
