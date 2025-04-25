@@ -1,11 +1,13 @@
 import { ChatOpenAI } from "@langchain/openai";
-import { AgentExecutor, createOpenAIToolsAgent } from "@langchain/core/agents";
+import { AgentExecutor } from "@langchain/core/agents/executor";
+import { OpenAIToolsAgent } from "@langchain/core/agents/openai";
 import { executarSQL } from "../tools/executarSql.js";
 import { SchemaInspector } from "../tools/schemaInspector.js";
 
+
 let executor = null;
 
-export async function handler (event) {
+export async function handler(event) {
   if (!executor) {
     const model = new ChatOpenAI({
       model: "gpt-4o",
@@ -15,16 +17,9 @@ export async function handler (event) {
 
     const tools = [executarSQL, new SchemaInspector()];
 
-    const agent = await createOpenAIToolsAgent({
-      llm: model,
-      tools,
-    });
+    const agent = new OpenAIToolsAgent({ llm: model, tools });
 
-    executor = AgentExecutor.fromAgentAndTools({
-      agent,
-      tools,
-      verbose: true,
-    });
+    executor = new AgentExecutor({ agent, tools, verbose: true });
   }
 
   const body = JSON.parse(event.body);
@@ -36,5 +31,6 @@ export async function handler (event) {
     statusCode: 200,
     body: JSON.stringify({ resposta: result.output }),
   };
-};
+}
+
 
