@@ -2,8 +2,6 @@ service: mba-backend
 
 frameworkVersion: '3'
 
-useDotenv: true
-
 plugins:
   - serverless-esbuild
 
@@ -22,24 +20,7 @@ functions:
     handler: src/agent/index.handler
     events:
       - httpApi:
-          path: /pergunta
+          path: /question
           method: POST
-
-custom:
-  esbuild:
-    bundle: true
-    format: esm
-    target: node20
-    platform: node
-    external:
-      - "@langchain/openai"
-      - "@langchain/core"
-
-package:
-  include:
-    - src/**
-    - package.json
-    - package-lock.json
-
 
 

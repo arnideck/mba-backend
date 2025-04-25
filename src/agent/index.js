@@ -5,7 +5,7 @@ import { SchemaInspector } from "../tools/schemaInspector.js";
 
 let executor = null;
 
-export const handler = async (event) => {
+export async function handler (event) {
   if (!executor) {
     const model = new ChatOpenAI({
       model: "gpt-4o",
