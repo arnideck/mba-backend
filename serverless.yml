@@ -4,6 +4,9 @@ frameworkVersion: '3'
 
 useDotenv: true
 
+plugins:
+  - serverless-esbuild
+
 provider:
   name: aws
   runtime: nodejs20.x
@@ -22,9 +25,6 @@ functions:
           path: /pergunta
           method: POST
 
-plugins:
-  - serverless-esbuild
-
 custom:
   esbuild:
     bundle: true
@@ -37,7 +37,9 @@ custom:
 
 package:
   include:
-    - src/tools/*.js
-    - src/tools/dicionario_dados_negocio.json
+    - src/**
+    - package.json
+    - package-lock.json
+
 
 

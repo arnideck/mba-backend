@@ -26,7 +26,7 @@ jobs:
         run: node -v
 
       - name: Install dependencies for Backend
-        run: npm ci
+        run: npm install
 
       - name: Install dependencies for Backend
         run: npm ci
@@ -49,6 +49,9 @@ jobs:
 
       - name: Verificar conteúdo do bundle gerado
         run: unzip -l .serverless/*.zip || echo "ZIP não encontrado"
+
+      - name: Verificar versão do serverless-esbuild
+        run: npm ls serverless-esbuild
 
         
 
