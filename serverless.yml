@@ -13,7 +13,7 @@ provider:
     LARAVEL_TOKEN: ${env:LARAVEL_TOKEN}
 
 functions:
-  agent-handler:
+  agent:
     handler: src/agent/index.handler
     events:
       - httpApi:
@@ -25,10 +25,16 @@ plugins:
 
 custom:
   esbuild:
-    format: esm
     bundle: true
+    format: esm
     target: node20
     platform: node
     external:
       - "@langchain/openai"
       - "@langchain/core"
+    copyFiles:
+      - from: 'src/tools/*.js'
+        to: 'src/tools/'
+      - from: 'src/tools/dicionario_dados_negocio.json'
+        to: 'src/tools/dicionario_dados_negocio.json'  
+
