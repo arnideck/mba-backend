@@ -17,7 +17,7 @@ functions:
     handler: src/agent/index.handler
     events:
       - httpApi:
-          path: /question
+          path: /pergunta
           method: POST
 
 plugins:
@@ -32,9 +32,10 @@ custom:
     external:
       - "@langchain/openai"
       - "@langchain/core"
-    copyFiles:
-      - from: 'src/tools/*.js'
-        to: 'src/tools/'
-      - from: 'src/tools/dicionario_dados_negocio.json'
-        to: 'src/tools/dicionario_dados_negocio.json'  
+
+package:
+  include:
+    - src/tools/*.js
+    - src/tools/dicionario_dados_negocio.json
+
 
