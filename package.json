@@ -11,10 +11,10 @@
   "dependencies": {
     "@langchain/core": "^0.3.48",
     "@langchain/openai": "^0.5.7",
-    "langchain": "^0.3.24",
     "axios": "^1.8.4",
+    "langchain": "^0.3.24",
     "querystring": "^0.2.1"
-  },  
+  },
   "devDependencies": {
     "serverless": "^3.38.0",
     "serverless-esbuild": "^1.55.0"
