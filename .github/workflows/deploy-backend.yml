@@ -28,9 +28,6 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Install dependencies 2
-        run: npm ci
-
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
@@ -40,5 +37,8 @@ jobs:
 
       - name: Deploy with Serverless
         run: npm run deploy
+
+      - name: List Serverless output (debug)
+        run: ls -R .serverless || echo "No .serverless folder found"
 
       

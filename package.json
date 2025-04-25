@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "BI Conversacional com Lambda, LangChain e OpenAI",
   "type": "module",
+  "main": "src/agent/index.js",
   "scripts": {
     "deploy": "serverless deploy",
     "remove": "serverless remove",
