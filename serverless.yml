@@ -38,6 +38,14 @@ functions:
           path: /agent
           method: post
 
+  agentDryRun:
+    handler: services/agent-dryrun/index.handler
+    events:
+      - httpApi:
+          path: /agent-dryrun
+          method: post
+
+  
   executarSql:
     handler: services/exec-sql/index.handler
 
