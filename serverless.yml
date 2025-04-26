@@ -2,25 +2,44 @@ service: mba-backend
 
 frameworkVersion: '3'
 
-plugins:
-  - serverless-esbuild
-
 provider:
   name: aws
   runtime: nodejs20.x
   region: us-east-1
-  stage: dev
+  stage: ${opt:stage, 'dev'}
   environment:
-    OPENAI_API_KEY: ${env:OPENAI_API_KEY}
-    LARAVEL_API_URL: ${env:LARAVEL_API_URL}
-    LARAVEL_TOKEN: ${env:LARAVEL_TOKEN}
+    SECRET_NAME: credenciaisMba
+
+  iamRoleStatements:
+    # leitura do Secret Manager
+    - Effect: Allow
+      Action:
+        - secretsmanager:GetSecretValue
+        - secretsmanager:DescribeSecret
+      Resource:
+        - arn:aws:secretsmanager:us-east-1:047719652186:secret:credenciaisMba-*
+
+    # invocação das lambdas internas
+    - Effect: Allow
+      Action:
+        - lambda:InvokeFunction
+      Resource:
+        - arn:aws:lambda:us-east-1:047719652186:function:mba-backend-${self:provider.stage}-executarSql
+        - arn:aws:lambda:us-east-1:047719652186:function:mba-backend-${self:provider.stage}-schemaInspector
 
 functions:
   agent:
-    handler: src/agent/index.handler
+    handler: services/agent/index.handler
     events:
       - httpApi:
-          path: /question
-          method: POST
+          path: /agent
+          method: post
 
+  executarSql:
+    handler: services/executar-sql/index.handler
 
+  schemaInspector:
+    handler: services/schema-inspector/index.handler
+
+plugins:
+  - serverless-esbuild

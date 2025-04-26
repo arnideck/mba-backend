@@ -1,0 +1,7 @@
+{
+  "name": "schema-inspector-lambda",
+  "version": "1.0.0",
+  "dependencies": {
+    "@langchain/core": "^0.3.48"
+  }
+}

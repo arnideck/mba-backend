@@ -3,17 +3,11 @@
   "version": "1.0.0",
   "description": "BI Conversacional com Lambda, LangChain e OpenAI",
   "type": "module",
+  "private": true,
   "scripts": {
     "deploy": "serverless deploy",
     "remove": "serverless remove",
     "package": "serverless package"
-  },
-  "dependencies": {
-    "@langchain/core": "^0.3.48",
-    "@langchain/openai": "^0.5.7",
-    "axios": "^1.8.4",
-    "langchain": "^0.3.24",
-    "querystring": "^0.2.1"
   },
   "devDependencies": {
     "serverless": "^3.38.0",
