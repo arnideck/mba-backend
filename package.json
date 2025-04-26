@@ -5,9 +5,15 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "deploy": "serverless deploy",
-    "remove": "serverless remove",
-    "package": "serverless package"
+    "deploy": "serverless deploy --stage $STAGE",
+    "remove": "serverless remove --stage $STAGE",
+    "package": "serverless package --stage $STAGE"
+  },
+  "dependencies": {
+    "@langchain/core": "^0.3.48",
+    "@langchain/openai": "^0.5.7",
+    "langchain": "^0.3.24",
+    "axios": "^1.8.4"
   },
   "devDependencies": {
     "serverless": "^3.38.0",

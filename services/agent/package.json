@@ -1,9 +1,0 @@
-{
-  "name": "agent-lambda",
-  "version": "1.0.0",
-  "dependencies": {
-    "@langchain/core": "^0.3.48",
-    "@langchain/openai": "^0.5.7",
-    "langchain": "^0.3.24"
-  }
-}
