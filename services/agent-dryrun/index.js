@@ -1,7 +1,6 @@
 import { SecretsManagerClient, GetSecretValueCommand } from "@aws-sdk/client-secrets-manager";
 import { ChatOpenAI } from "@langchain/openai";
-import { createOpenAIToolsAgent } from "langchain/agents";
-import { RunnableAgentExecutor } from "langchain/agents/executors";
+import { AgentExecutor, createOpenAIToolsAgent } from "langchain/agents";
 import { SchemaInspector } from "../schema-inspector/index.js";
 
 const secretsClient = new SecretsManagerClient({ region: process.env.AWS_REGION });
@@ -33,7 +32,7 @@ export async function handler(event) {
       {
         name: "executarSql",
         description: "Dry-run: retorna apenas o SQL gerado",
-        async call(input) { // <-- cuidado: novo padrão é "call" no lugar de "_call"
+        async _call(input) {   // Usar _call pois é o padrão no 0.3.x
           return input;
         },
       },
@@ -41,10 +40,13 @@ export async function handler(event) {
 
     const agent = await createOpenAIToolsAgent({ llm: model, tools });
 
-    executor = RunnableAgentExecutor.fromAgentAndTools({
+    agent.inputVariables = ["input"];  // 👈 Forçar o input manualmente
+
+    executor = new AgentExecutor({
       agent,
       tools,
       verbose: true,
+      inputVariables: ["input"]
     });
   }
 
@@ -53,8 +55,6 @@ export async function handler(event) {
 
   return {
     statusCode: 200,
-    body: JSON.stringify({ sql: result }),
+    body: JSON.stringify({ sql: result.output }),
   };
 }
-
-
