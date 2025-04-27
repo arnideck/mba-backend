@@ -1,6 +1,7 @@
 import { SecretsManagerClient, GetSecretValueCommand } from "@aws-sdk/client-secrets-manager";
 import { ChatOpenAI } from "@langchain/openai";
-import { AgentExecutor, createOpenAIToolsAgent } from "langchain/agents";
+import { createOpenAIToolsAgent } from "langchain/agents";
+import { RunnableAgentExecutor } from "langchain/agents/executors";
 import { SchemaInspector } from "../schema-inspector/index.js";
 
 const secretsClient = new SecretsManagerClient({ region: process.env.AWS_REGION });
@@ -18,51 +19,42 @@ async function getCredentials() {
 let executor = null;
 export async function handler(event) {
   if (!executor) {
-    // 1) Carrega OPENAI_API_KEY do Secret Manager
     const { OPENAI_API_KEY } = await getCredentials();
     process.env.OPENAI_API_KEY = OPENAI_API_KEY;
 
-    // 2) Instancia o modelo
     const model = new ChatOpenAI({
       model: "gpt-4o",
       temperature: 0,
       apiKey: process.env.OPENAI_API_KEY,
     });
 
-    // 3) Define ferramentas: schemaInspector + dry-run do SQL
     const tools = [
       new SchemaInspector(),
       {
         name: "executarSql",
         description: "Dry-run: retorna apenas o SQL gerado",
-        async _call(input) {
-          return input; // Aqui, input é o SQL montado pelo agente
+        async call(input) { // <-- cuidado: novo padrão é "call" no lugar de "_call"
+          return input;
         },
       },
     ];
 
     const agent = await createOpenAIToolsAgent({ llm: model, tools });
-    console.log("Agent:", agent); // Debug log
-    console.log("Tools:", tools); // Debug log
 
-    agent.inputVariables = ["input"]; // Adiciona a variável de entrada "input" ao agente
-    
-    executor = new AgentExecutor({
+    executor = RunnableAgentExecutor.fromAgentAndTools({
       agent,
       tools,
-      inputVariables: ["input"],
-      verbose: true
+      verbose: true,
     });
   }
 
-  // 4) Recebe a pergunta e invoca
   const { question } = JSON.parse(event.body);
   const result = await executor.invoke({ input: question });
 
-  // 5) Retorna o SQL montado como JSON
   return {
     statusCode: 200,
-    body: JSON.stringify({ sql: result.output }),
+    body: JSON.stringify({ sql: result }),
   };
 }
+
 
