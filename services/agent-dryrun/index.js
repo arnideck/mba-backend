@@ -47,8 +47,18 @@ export async function handler(event) {
     );
   }
 
-  const { question } = JSON.parse(event.body);
+  const body = event.body ? JSON.parse(event.body) : {};
+  const { question } = body;
+  
+  if (!question) {
+    return {
+      statusCode: 400,
+      body: JSON.stringify({ error: "Campo 'question' é obrigatório no body." }),
+    };
+  }
+  
   const result = await executor.call({ input: question });
+  
 
   return {
     statusCode: 200,
