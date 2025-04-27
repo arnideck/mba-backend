@@ -9,6 +9,7 @@
     "package": "serverless package --stage $STAGE"
   },
   "dependencies": {
+    "@aws-sdk/client-secrets-manager": "^3.797.0",
     "@langchain/core": "^0.3.48",
     "@langchain/openai": "^0.5.7",
     "aws-sdk": "^2.1692.0",
