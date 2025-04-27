@@ -1,5 +1,5 @@
 import { SecretsManagerClient, GetSecretValueCommand } from "@aws-sdk/client-secrets-manager";
-import { ChatOpenAI } from "langchain/chat_models/openai";
+import { ChatOpenAI } from "langchain/chat_models";
 import { AgentExecutor, initializeAgentExecutorWithOptions } from "langchain/agents";
 import { SchemaInspector } from "../schema-inspector/index.js";
 
