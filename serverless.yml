@@ -2,9 +2,6 @@ service: mba-backend
 
 frameworkVersion: '3'
 
-plugins:
-  - serverless-esbuild
-
 provider:
   name: aws
   runtime: nodejs20.x
@@ -32,14 +29,14 @@ provider:
 
 functions:
   agent:
-    handler: services/agent/index.handler
+    handler: services/agent/index.mjs
     events:
       - httpApi:
           path: /agent
           method: post
 
   agentDryRun:
-    handler: services/agent-dryrun/index.handler
+    handler: services/agent-dryrun/index.mjs
     events:
       - httpApi:
           path: /agent-dryrun
@@ -47,18 +44,10 @@ functions:
 
   
   executarSql:
-    handler: services/exec-sql/index.handler
+    handler: services/exec-sql/index.mjs
 
   schemaInspector:
-    handler: services/schema-inspector/index.handler
+    handler: services/schema-inspector/index.mjs
 
-custom:
-  esbuild:
-    bundle: true
-    minify: false
-    sourcemap: true
-    target: node20
-    platform: node
-    format: esm
-    external:
-      - aws-sdk
+plugins:
+  - serverless-esbuild

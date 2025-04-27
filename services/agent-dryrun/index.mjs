@@ -1,7 +1,7 @@
 import AWS from "aws-sdk";
 import { ChatOpenAI } from "@langchain/openai";
 import { AgentExecutor, createOpenAIToolsAgent } from "langchain/agents";
-import { SchemaInspector } from "../schema-inspector/index.js";
+import { SchemaInspector } from "../schema-inspector/index.mjs";
 
 const secretsManager = new AWS.SecretsManager({ region: process.env.AWS_REGION });
 let credsCache = null;
