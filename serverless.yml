@@ -29,14 +29,14 @@ provider:
 
 functions:
   agent:
-    handler: services/agent/index.mjs
+    handler: services/agent/index.handler
     events:
       - httpApi:
           path: /agent
           method: post
 
   agentDryRun:
-    handler: services/agent-dryrun/index.mjs
+    handler: services/agent-dryrun/index.handler
     events:
       - httpApi:
           path: /agent-dryrun
@@ -44,10 +44,10 @@ functions:
 
   
   executarSql:
-    handler: services/exec-sql/index.mjs
+    handler: services/exec-sql/index.handler
 
   schemaInspector:
-    handler: services/schema-inspector/index.mjs
+    handler: services/schema-inspector/index.handler
 
 plugins:
   - serverless-esbuild
