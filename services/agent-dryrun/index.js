@@ -1,6 +1,6 @@
 import { SecretsManagerClient, GetSecretValueCommand } from "@aws-sdk/client-secrets-manager";
-import { ChatOpenAI } from "langchain/chat_models";
-import { AgentExecutor, initializeAgentExecutorWithOptions } from "langchain/agents";
+import { ChatOpenAI } from "@langchain/openai"; // ✅ Novo: correto agora
+import { AgentExecutor, initializeAgentExecutorWithOptions } from "@langchain/core/agents"; // ✅ Vindo de @langchain/core
 import { SchemaInspector } from "../schema-inspector/index.js";
 
 const secretsClient = new SecretsManagerClient({ region: process.env.AWS_REGION });
@@ -32,7 +32,7 @@ export async function handler(event) {
         name: "executarSql",
         description: "Apenas retorna o SQL gerado pelo agente",
         func: async (input) => {
-          return input;  // Só devolve o SQL, não executa
+          return input;
         },
       },
     ];
@@ -55,4 +55,3 @@ export async function handler(event) {
     body: JSON.stringify({ sql: result.output }),
   };
 }
-
