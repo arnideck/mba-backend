@@ -42,7 +42,11 @@ export async function handler(event) {
     ];
 
     const agent = await createOpenAIToolsAgent({ llm: model, tools });
+    console.log("Agent:", agent); // Debug log
+    console.log("Tools:", tools); // Debug log
 
+    agent.inputVariables = ["input"]; // Adiciona a variável de entrada "input" ao agente
+    
     executor = new AgentExecutor({
       agent,
       tools,
