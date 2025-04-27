@@ -1,6 +1,6 @@
 import { SecretsManagerClient, GetSecretValueCommand } from "@aws-sdk/client-secrets-manager";
 import { ChatOpenAI } from "@langchain/openai"; // ✅ Novo: correto agora
-import { AgentExecutor, initializeAgentExecutorWithOptions } from "@langchain/core/agents"; // ✅ Vindo de @langchain/core
+import { AgentExecutor, initializeAgentExecutor } from "langchain/agents";
 import { SchemaInspector } from "../schema-inspector/index.js";
 
 const secretsClient = new SecretsManagerClient({ region: process.env.AWS_REGION });
@@ -23,7 +23,7 @@ export async function handler(event) {
 
     const model = new ChatOpenAI({
       temperature: 0,
-      openAIApiKey: process.env.OPENAI_API_KEY
+      openAIApiKey: process.env.OPENAI_API_KEY,
     });
 
     const tools = [
@@ -37,12 +37,12 @@ export async function handler(event) {
       },
     ];
 
-    executor = await initializeAgentExecutorWithOptions(
+    executor = await initializeAgentExecutor(
       tools,
       model,
+      "zero-shot-react-description", // Pass the agent type as a string
       {
-        agentType: "zero-shot-react-description",
-        verbose: true,
+        verbose: true, // Additional options
       }
     );
   }
