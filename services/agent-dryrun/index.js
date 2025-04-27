@@ -1,6 +1,6 @@
 import { SecretsManagerClient, GetSecretValueCommand } from "@aws-sdk/client-secrets-manager";
-import { ChatOpenAI } from "@langchain/openai"; // ✅ Novo: correto agora
-import { AgentExecutor, initializeAgentExecutor } from "langchain/agents";
+import { ChatOpenAI } from "@langchain/openai";
+import { initializeAgentExecutor } from "langchain/agents"; // ✅ Aqui trocamos!
 import { SchemaInspector } from "../schema-inspector/index.js";
 
 const secretsClient = new SecretsManagerClient({ region: process.env.AWS_REGION });
@@ -16,33 +16,69 @@ async function getCredentials() {
 }
 
 let executor = null;
+
 export async function handler(event) {
-  console.log("Evento recebido:", JSON.stringify(event)); // 👈 LOG pra ver exatamente o que chega
+  try {
+    console.log("Evento recebido:", JSON.stringify(event));
 
-  let question = undefined;
+    let question = undefined;
 
-  // Se for API Gateway HTTP v2
-  if (event.body) {
-    const body = JSON.parse(event.body);
-    question = body.question;
-  } else if (event.question) {
-    // Se for invocação direta tipo Lambda test
-    question = event.question;
-  }
+    if (event.body) {
+      const body = JSON.parse(event.body);
+      question = body.question;
+    } else if (event.question) {
+      question = event.question;
+    }
 
-  if (!question) {
+    if (!question) {
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ error: "Campo 'question' é obrigatório no body." }),
+      };
+    }
+
+    if (!executor) {
+      const { OPENAI_API_KEY } = await getCredentials();
+      process.env.OPENAI_API_KEY = OPENAI_API_KEY;
+
+      const model = new ChatOpenAI({
+        temperature: 0,
+        openAIApiKey: process.env.OPENAI_API_KEY
+      });
+
+      const tools = [
+        new SchemaInspector(),
+        {
+          name: "executarSql",
+          description: "Apenas retorna o SQL gerado",
+          func: async (input) => {
+            return input;
+          },
+        },
+      ];
+
+      executor = await initializeAgentExecutor(tools, model, true); 
+      // 🧠 initializeAgentExecutor(tools, model, verbose)
+    }
+
+    if (!executor) {
+      return {
+        statusCode: 500,
+        body: JSON.stringify({ error: "Erro interno ao inicializar agente." }),
+      };
+    }
+
+    const result = await executor.call({ input: question });
+
     return {
-      statusCode: 400,
-      body: JSON.stringify({ error: "Campo 'question' é obrigatório no body." }),
+      statusCode: 200,
+      body: JSON.stringify({ sql: result.output }),
+    };
+  } catch (error) {
+    console.error("Erro no handler:", error);
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ error: "Erro inesperado", details: error.message }),
     };
   }
-
-  // Aí segue a chamada normal
-  const result = await executor.call({ input: question });
-
-  return {
-    statusCode: 200,
-    body: JSON.stringify({ sql: result.output }),
-  };
 }
-
