@@ -43,13 +43,12 @@ export async function handler(event) {
 
     const agent = await createOpenAIToolsAgent({ llm: model, tools });
 
-    executor = await AgentExecutor.fromAgentAndTools({
+    executor = new AgentExecutor({
       agent,
       tools,
       inputVariables: ["input"],
-      verbose: true,
+      verbose: true
     });
-
   }
 
   // 4) Recebe a pergunta e invoca
