@@ -1,6 +1,6 @@
 import { SecretsManagerClient, GetSecretValueCommand } from "@aws-sdk/client-secrets-manager";
-import { ChatOpenAI } from "@langchain/openai";
-import { AgentExecutor, createOpenAIToolsAgent } from "langchain/agents";
+import { ChatOpenAI } from "langchain/chat_models/openai";
+import { AgentExecutor, initializeAgentExecutorWithOptions } from "langchain/agents";
 import { SchemaInspector } from "../schema-inspector/index.js";
 
 const secretsClient = new SecretsManagerClient({ region: process.env.AWS_REGION });
@@ -22,39 +22,37 @@ export async function handler(event) {
     process.env.OPENAI_API_KEY = OPENAI_API_KEY;
 
     const model = new ChatOpenAI({
-      model: "gpt-4o",
       temperature: 0,
-      apiKey: process.env.OPENAI_API_KEY,
+      openAIApiKey: process.env.OPENAI_API_KEY
     });
 
     const tools = [
       new SchemaInspector(),
       {
         name: "executarSql",
-        description: "Dry-run: retorna apenas o SQL gerado",
-        async _call(input) {   // Usar _call pois é o padrão no 0.3.x
-          return input;
+        description: "Apenas retorna o SQL gerado pelo agente",
+        func: async (input) => {
+          return input;  // Só devolve o SQL, não executa
         },
       },
     ];
 
-    const agent = await createOpenAIToolsAgent({ llm: model, tools });
-
-    agent.inputVariables = ["input"];  // 👈 Forçar o input manualmente
-
-    executor = new AgentExecutor({
-      agent,
+    executor = await initializeAgentExecutorWithOptions(
       tools,
-      verbose: true,
-      inputVariables: ["input"]
-    });
+      model,
+      {
+        agentType: "zero-shot-react-description",
+        verbose: true,
+      }
+    );
   }
 
   const { question } = JSON.parse(event.body);
-  const result = await executor.invoke({ input: question });
+  const result = await executor.call({ input: question });
 
   return {
     statusCode: 200,
     body: JSON.stringify({ sql: result.output }),
   };
 }
+

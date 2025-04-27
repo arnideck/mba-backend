@@ -10,8 +10,6 @@
   },
   "dependencies": {
     "@aws-sdk/client-secrets-manager": "^3.491.0",
-    "@langchain/core": "^0.3.48",
-    "@langchain/openai": "^0.4.7",
     "langchain": "^0.3.24",
     "axios": "^1.8.4"
   },
