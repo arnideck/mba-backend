@@ -46,6 +46,7 @@ export async function handler(event) {
         apiKey: process.env.OPENAI_API_KEY,
         model: "gpt-4o",
         temperature: 0,
+        
       });
       
 
@@ -67,6 +68,10 @@ export async function handler(event) {
         {
           agentType: "zero-shot-react-description",
           verbose: true,
+          agentArgs: {
+            prefix: "Você é um assistente de SQL. Você deve gerar consultas SQL com base na pergunta do usuário.Você deve gerar diretamente apenas o comando SQL, e nada mais. Sem explicações.",
+            suffix: "Apenas retorne o SQL gerado.",
+          },
         }
       );
     }
