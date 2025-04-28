@@ -1240,7 +1240,7 @@
     }    
   },
   "producoes": {
-    "descricao": "Tabela 'producoes' utilizada para controle e registro das produções de apólices.",
+    "descricao": "Tabela 'producoes' de produções de seguros, contendo prêmios e informações de produtos.",
     "colunas": {
       "id": {
         "tipo": "int(10)",
@@ -1284,11 +1284,11 @@
       },
       "produto": {
         "tipo": "varchar(100)",
-        "descricao": "Descrição do ramo do seguro comercializado.Automóvel,Residencial,Empresarial,Vida,e outros"
+        "descricao": "Descrição do ramo do seguro comercializado.Tipo de produto,Automóvel,Residencial,Empresarial,Vida,e outros"
       },
       "premioLq": {
         "tipo": "decimal(13,2)",
-        "descricao": "Valor do seguro comercializado sem impostos e juros. Valor que deverá ser utilizado para calculo de comissões e repasses."
+        "descricao": "Valor do seguro comercializado sem impostos e juros.Valor de prêmio. Valor que deverá ser utilizado para calculo de comissões e repasses."
       },
       "status": {
         "tipo": "int(11)",
