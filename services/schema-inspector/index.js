@@ -6,43 +6,28 @@ import { getSchema } from "./getDatabaseSchema.js";
 export class SchemaInspector extends Tool {
   constructor() {
     super();
-    this.name = "schema_inspector";
-    this.description =
-      "Utiliza o dicionário de dados para responder perguntas sobre tabelas, colunas e relacionamentos.";
+    this.name = "schemaInspector";
+    this.description = "Fornece uma descrição das tabelas e colunas do banco de dados para auxiliar na criação de consultas SQL.";
   }
 
-  async _call(input) {
+  async _call(query) {
     const schema = getSchema();
-    let output = "";
-    const termo = input.toLowerCase();
+
+    let resposta = "**Dicionário de Dados Disponível:**\n\n";
 
     for (const [tabela, dados] of Object.entries(schema)) {
-      if (
-        tabela.toLowerCase().includes(termo) ||
-        JSON.stringify(dados).toLowerCase().includes(termo)
-      ) {
-        output += `Tabela: ${tabela}\nDescrição: ${
-          dados.descricao || "sem descrição"
-        }\n`;
-
-        for (const [col, def] of Object.entries(dados.colunas || {})) {
-          output += `  - ${col} (${def.tipo}): ${
-            def.descricao || "sem descrição"
-          }\n`;
+      resposta += `Tabela: ${tabela}\n`;
+      if (dados.colunas) {
+        resposta += `Campos:\n`;
+        for (const [coluna, detalhes] of Object.entries(dados.colunas)) {
+          resposta += `- ${coluna}: ${detalhes.descricao || "Sem descrição"}\n`;
         }
-
-        if (dados.relacoes) {
-          output += `  Relacionamentos:\n`;
-          for (const [campo, rel] of Object.entries(dados.relacoes)) {
-            output += `    - ${campo} → ${rel.tabela}.${rel.coluna} (${
-              rel.descricao || ""
-            })\n`;
-          }
-        }
-        output += "\n";
       }
+      resposta += `\n`;
     }
 
-    return output || "Nenhuma informação relevante encontrada no schema.";
+    console.log("✅ Resposta formatada enviada ao agente:\n", resposta);
+
+    return resposta;
   }
 }
