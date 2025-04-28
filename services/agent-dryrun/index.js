@@ -96,18 +96,24 @@ export async function handler(event) {
 }
 
 function extrairSQL(texto) {
-  // 1. Tenta extrair trechos entre ```sql ... ``` se existirem
+  // 1. Tenta extrair trechos entre ```sql ... ```
   const sqlCodeBlock = texto.match(/```sql\s*([\s\S]*?)```/i);
   if (sqlCodeBlock && sqlCodeBlock[1]) {
     return sqlCodeBlock[1].trim();
   }
 
-  // 2. Se não tiver ```sql, tenta achar um SELECT/UPDATE/INSERT/DELETE
+  // 2. Tenta extrair comandos SQL comuns direto do texto
   const comandoSQL = texto.match(/(SELECT|UPDATE|INSERT INTO|DELETE FROM)[\s\S]*?;/i);
   if (comandoSQL && comandoSQL[0]) {
     return comandoSQL[0].trim();
   }
 
-  // 3. Caso não ache nada, retorna o texto original mesmo (melhor que vazio)
+  // 3. Última tentativa: procurar padrões com WHERE/AND/OR
+  const possivelSQL = texto.match(/[\s\S]*WHERE[\s\S]*;/i);
+  if (possivelSQL && possivelSQL[0]) {
+    return possivelSQL[0].trim();
+  }
+
+  // 4. Se nada for detectado, devolve tudo como fallback
   return texto.trim();
 }
