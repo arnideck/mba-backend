@@ -74,7 +74,7 @@ export async function handler(event) {
     if (!executor) {
       return {
         statusCode: 500,
-        body: JSON.stringify({ error: "Erro interno ao inicializar agente." }),
+        body: JSON.stringify({ error: "Erro interno ao inicializar agente.", }),
       };
     }
 
