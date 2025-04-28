@@ -67,7 +67,7 @@ export async function handler(event) {
         },
       ];
 
-      executor = await initializeAgentExecutor(tools, model, true); 
+      executor = await initializeAgentExecutor(tools, model2, true); 
       // 🧠 initializeAgentExecutor(tools, model, verbose)
     }
 
