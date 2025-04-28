@@ -80,9 +80,11 @@ export async function handler(event) {
 
     const result = await executor.call({ input: question });
 
+    const sqlExtraido = extrairSQL(result.output);
+
     return {
       statusCode: 200,
-      body: JSON.stringify({ sql: result.output }),
+      body: JSON.stringify({ sql: sqlExtraido }),
     };
   } catch (error) {
     console.error("Erro no handler:", error);
@@ -91,4 +93,21 @@ export async function handler(event) {
       body: JSON.stringify({ error: "Erro inesperado", details: error.message }),
     };
   }
+}
+
+function extrairSQL(texto) {
+  // 1. Tenta extrair trechos entre ```sql ... ``` se existirem
+  const sqlCodeBlock = texto.match(/```sql\s*([\s\S]*?)```/i);
+  if (sqlCodeBlock && sqlCodeBlock[1]) {
+    return sqlCodeBlock[1].trim();
+  }
+
+  // 2. Se não tiver ```sql, tenta achar um SELECT/UPDATE/INSERT/DELETE
+  const comandoSQL = texto.match(/(SELECT|UPDATE|INSERT INTO|DELETE FROM)[\s\S]*?;/i);
+  if (comandoSQL && comandoSQL[0]) {
+    return comandoSQL[0].trim();
+  }
+
+  // 3. Caso não ache nada, retorna o texto original mesmo (melhor que vazio)
+  return texto.trim();
 }
