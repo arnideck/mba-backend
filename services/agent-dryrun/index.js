@@ -42,17 +42,10 @@ export async function handler(event) {
       const { OPENAI_API_KEY } = await getCredentials();
       process.env.OPENAI_API_KEY = OPENAI_API_KEY;
 
-      const model = new OpenAI({
-        modelName: "gpt-4",
-        temperature: 0.7,
-        maxTokens: 1000,
-        maxRetries: 5,
-        openAIApiKey: process.env.OPENAI_API_KEY,
-      });
-
-      const model2 = new ChatOpenAI({
+      const model = new ChatOpenAI({
         apiKey: process.env.OPENAI_API_KEY,
-        modelName: "gpt-4-1106-preview",
+        model: "gpt-4o",
+        temperature: 0,
       });
       
 
