@@ -1,5 +1,5 @@
 import { SecretsManagerClient, GetSecretValueCommand } from "@aws-sdk/client-secrets-manager";
-import { ChatOpenAI } from "@langchain/openai";
+import { OpenAI } from "langchain/llms/openai";
 import { initializeAgentExecutor } from "langchain/agents"; // ✅ Aqui trocamos!
 import { SchemaInspector } from "../schema-inspector/index.js";
 
@@ -41,10 +41,11 @@ export async function handler(event) {
       const { OPENAI_API_KEY } = await getCredentials();
       process.env.OPENAI_API_KEY = OPENAI_API_KEY;
 
-      const model = new ChatOpenAI({
+      const model = new OpenAI({
         temperature: 0,
-        openAIApiKey: process.env.OPENAI_API_KEY
+        openAIApiKey: process.env.OPENAI_API_KEY,
       });
+      
 
       const tools = [
         new SchemaInspector(),
