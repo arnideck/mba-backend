@@ -4,7 +4,7 @@ import { LLMChain } from "langchain/chains";
 import { PromptTemplate } from "@langchain/core/prompts";
 import { getSchema } from "../schema-inspector/getDatabaseSchema.js";
 
-// 🔥 NOVO: Gera o contexto dinâmico a partir do dicionário
+// 🔥 Gera o contexto dinâmico a partir do dicionário
 function gerarSchemaContexto() {
   const schema = getSchema();
   let contexto = "Tabelas e colunas disponíveis:\n\n";
@@ -26,7 +26,7 @@ function gerarSchemaContexto() {
 const secretsClient = new SecretsManagerClient({ region: process.env.AWS_REGION });
 let credsCache = null;
 
-// Busca segredo (OPENAI_API_KEY)
+// Busca segredo
 async function getCredentials() {
   if (!credsCache) {
     const command = new GetSecretValueCommand({ SecretId: process.env.SECRET_NAME });
@@ -96,29 +96,34 @@ export async function handler(event) {
       const schemaContext = gerarSchemaContexto();
 
       const prompt = PromptTemplate.fromTemplate(`
-        Você é um assistente de banco de dados SQL.
+Você é um assistente de banco de dados SQL.
 
-        Utilize APENAS as tabelas e colunas fornecidas abaixo para gerar as consultas:
+Utilize APENAS as tabelas e colunas fornecidas abaixo para gerar as consultas:
 
-        ${schemaContext}
+${schemaContext}
 
-        Regras:
-        - Sempre use 'premioLq' para prêmios financeiros.
-        - Quando filtrar produto automóvel, use produto LIKE '%auto%'.
-        - Datas devem estar no formato 'YYYY-MM-DD'.
-        - Responda apenas com o comando SQL correto, sem explicações.
+Regras:
+- Sempre use 'premioLq' para prêmios financeiros.
+- Quando filtrar produto automóvel, use produto LIKE '%auto%'.
+- Datas devem estar no formato 'YYYY-MM-DD'.
+- Responda apenas com o comando SQL correto, sem explicações.
 
-        Pergunta: {input}
+Pergunta: {input}
 
-        SQL:
-        `);
+SQL:
+`);
 
       executor = new LLMChain({ llm: model, prompt });
     }
 
     const result = await executor.call({ input: question });
 
-    const sqlExtraido = extrairSQL(result.text);
+    let sqlExtraido = extrairSQL(result.text);
+
+    // 🌟 NOVO: Limpar o SQL - Remover múltiplos espaços e \n
+    sqlExtraido = sqlExtraido
+      .replace(/\s+/g, ' ')  // Troca múltiplos espaços e quebras de linha por 1 espaço
+      .trim();               // Remove espaços sobrando no começo/fim
 
     return {
       statusCode: 200,
@@ -133,3 +138,4 @@ export async function handler(event) {
     };
   }
 }
+
