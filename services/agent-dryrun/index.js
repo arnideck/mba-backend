@@ -71,6 +71,7 @@ export async function handler(event) {
           agentArgs: {
             prefix: "Você é um assistente de SQL. Você deve gerar consultas SQL com base na pergunta do usuário.Você deve gerar diretamente apenas o comando SQL, e nada mais. Sem explicações.",
             suffix: "Apenas retorne o SQL gerado.",
+            inputVariables: ["input"],
           },
         }
       );
