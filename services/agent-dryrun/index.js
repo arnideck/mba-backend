@@ -1,14 +1,13 @@
 import { SecretsManagerClient, GetSecretValueCommand } from "@aws-sdk/client-secrets-manager";
 import { ChatOpenAI } from "@langchain/openai";
-import { initializeAgentExecutorWithOptions } from "langchain/agents";
-import { getSchema } from "../schema-inspector/getDatabaseSchema.js";
-import { SchemaInspector } from "../schema-inspector/index.js";
+import { LLMChain } from "langchain/chains";
+import { PromptTemplate } from "@langchain/core/prompts";
 
-// Inicializa acesso ao Secrets Manager
+// Inicializa Secrets Manager
 const secretsClient = new SecretsManagerClient({ region: process.env.AWS_REGION });
 let credsCache = null;
 
-// Função para buscar segredo
+// Busca segredo
 async function getCredentials() {
   if (!credsCache) {
     const command = new GetSecretValueCommand({ SecretId: process.env.SECRET_NAME });
@@ -20,29 +19,29 @@ async function getCredentials() {
 
 // Função para extrair SQL puro da resposta
 function extrairSQL(texto) {
-  // 1. Tenta extrair entre blocos ```sql
+  // 1. Tenta extrair bloco ```sql``` se existir
   const sqlCodeBlock = texto.match(/```sql\s*([\s\S]*?)```/i);
   if (sqlCodeBlock && sqlCodeBlock[1]) {
     return sqlCodeBlock[1].trim();
   }
 
-  // 2. Tenta extrair comandos SQL diretos
+  // 2. Procura comandos SQL básicos
   const comandoSQL = texto.match(/(SELECT|UPDATE|INSERT INTO|DELETE FROM)[\s\S]*?;/i);
   if (comandoSQL && comandoSQL[0]) {
     return comandoSQL[0].trim();
   }
 
-  // 3. Última tentativa: trecho com WHERE
+  // 3. Última tentativa: trecho contendo WHERE
   const possivelSQL = texto.match(/[\s\S]*WHERE[\s\S]*;/i);
   if (possivelSQL && possivelSQL[0]) {
     return possivelSQL[0].trim();
   }
 
-  // 4. Se nada, retorna texto mesmo
+  // 4. Fallback: retornar tudo
   return texto.trim();
 }
 
-// Executor guardado em memória
+// Variável global para o executor
 let executor = null;
 
 // Lambda Handler
@@ -52,7 +51,6 @@ export async function handler(event) {
 
     let question = undefined;
 
-    // Tratamento para receber a pergunta
     if (event.body) {
       const body = JSON.parse(event.body);
       question = body.question;
@@ -69,7 +67,7 @@ export async function handler(event) {
 
     console.log("Pergunta recebida:", question);
 
-    // Inicializa agente se ainda não estiver inicializado
+    // Inicializa LLMChain se ainda não inicializado
     if (!executor) {
       const { OPENAI_API_KEY } = await getCredentials();
       process.env.OPENAI_API_KEY = OPENAI_API_KEY;
@@ -77,32 +75,24 @@ export async function handler(event) {
       const model = new ChatOpenAI({
         temperature: 0,
         openAIApiKey: process.env.OPENAI_API_KEY,
-        modelName: "gpt-4o", // ajuste se quiser
+        modelName: "gpt-4o", // ajuste se necessário
       });
 
-      const tools = [
-        new SchemaInspector(), // sua ferramenta que fornece o dicionário
-      ];
+      const prompt = PromptTemplate.fromTemplate(`
+            Você é um assistente de banco de dados.  
+            Sua tarefa é receber uma pergunta e gerar APENAS o comando SQL correspondente, sem explicações.  
+            Responda diretamente com o comando SQL.
+            Pergunta: {input}
+            SQL:
+    `);
 
-      executor = await initializeAgentExecutorWithOptions(
-        tools,
-        model,
-        {
-          agentType: "zero-shot-react-description",
-          verbose: true,
-          agentArgs: {
-            prefix: "Você é um assistente de SQL. Gere APENAS o comando SQL, e nada mais, com base na pergunta do usuário.",
-            suffix: "Pergunta: {input}\nSQL:",
-            inputVariables: ["input"]
-          }
-        }
-      );
+      executor = new LLMChain({ llm: model, prompt });
     }
 
-    const result = await executor.invoke({ input: question });
+    const result = await executor.call({ input: question });
 
-    // Extraindo apenas o SQL limpo
-    const sqlExtraido = extrairSQL(result.output);
+    // Extraindo apenas o SQL
+    const sqlExtraido = extrairSQL(result.text);
 
     return {
       statusCode: 200,
