@@ -13,14 +13,17 @@ export const handler = async (event) => {
   const body = event.body ? JSON.parse(event.body) : event;
   const sql = body.sql;
 
-  let cleanSql = sql.replace(/```sql|```/gi, "").trim();
+  let cleanSql = sql
+    .replace(/```sql/gi, "")  // remove início de bloco
+    .replace(/```/g, "")      // remove fim de bloco
+    .trim();
 
-    if (!cleanSql || !/^\s*SELECT/i.test(cleanSql)) {
-      return {
-        statusCode: 400,
-        body: JSON.stringify({ error: "Somente comandos SELECT são permitidos." }),
-      };
-    }
+  if (!cleanSql || !/^\s*SELECT/i.test(cleanSql)) {
+    return {
+      statusCode: 400,
+      body: JSON.stringify({ error: "Somente comandos SELECT são permitidos." }),
+    };
+  }
 
   try {
     const creds = await getCreds();
@@ -32,7 +35,7 @@ export const handler = async (event) => {
       database: creds.database
     });
 
-    const [rows] = await connection.execute(sql);
+    const [rows] = await connection.execute(cleanSql);
     await connection.end();
 
     return {
