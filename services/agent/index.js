@@ -112,7 +112,7 @@ SQL:
             FunctionName: "mba-backend-dev-executarSql",
             Payload: Buffer.from(JSON.stringify({ sql })),
           }));
-          const payload = Buffer.from(response.Payload).toString("utf-8");
+          const payload = JSON.parse(Buffer.from(response.Payload).toString("utf-8"));
           return extrairValorNumericoJson(payload);
         }
       });
@@ -123,7 +123,7 @@ SQL:
         {
           agentType: "zero-shot-react-description",
           verbose: true,
-         // maxIterations: 6,
+          maxIterations: 6,
           returnIntermediateSteps: true,
           
     agentArgs: {
