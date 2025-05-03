@@ -2,7 +2,6 @@ import { SecretsManagerClient, GetSecretValueCommand } from "@aws-sdk/client-sec
 import { ChatOpenAI } from "@langchain/openai";
 import { initializeAgentExecutorWithOptions } from "langchain/agents";
 import { DynamicTool } from "langchain/tools";
-import { PromptTemplate } from "@langchain/core/prompts";
 import { getSchema } from "../schema-inspector/getDatabaseSchema.js";
 import { LambdaClient, InvokeCommand } from "@aws-sdk/client-lambda";
 
@@ -132,7 +131,7 @@ export async function handler(event) {
           - Use datas no formato: 'YYYY-MM-DD'.
           - Responda somente com o SQL em bloco \`\`\`sql ... \`\`\`, sem explicações.
           
-          ${SchemaContexto}
+          ${schemaContext}
               `.trim(),
               suffix: "Pergunta do usuário: {input}"
             },
