@@ -92,7 +92,7 @@ ${schemaContext}
 Regras:
 - Sempre use 'premioLq' para prêmios financeiros.
 - Quando filtrar produto automóvel, use produto LIKE '%auto%'.
-- Sempre ignore registros com status = 0, a menos que a pergunta diga o contrário.
+- Sempre ignore registros com status = 0, a menos que a pergunta diga incluir cancelados ou recusados.
 - Datas devem estar no formato 'YYYY-MM-DD'.
 - Retorne apenas o comando SQL dentro de um bloco de código markdown: \`\`\`sql ... \`\`\`
 - Sem explicações, apenas o SQL.
@@ -109,7 +109,7 @@ SQL:
         func: async (input) => {
           const sql = input.replace(/```sql|```/gi, "").trim();
           const response = await lambdaClient.send(new InvokeCommand({
-            FunctionName: process.env.SQL_LAMBDA_NAME,
+            FunctionName: "mba-backend-dev-executarSql",
             Payload: Buffer.from(JSON.stringify({ sql })),
           }));
           const payload = Buffer.from(response.Payload).toString("utf-8");
@@ -128,18 +128,18 @@ SQL:
           
     agentArgs: {
         prefix: `
-Você é um agente especialista em SQL e análise de dados. Com base no contexto do schema abaixo, seu trabalho é:
+      Você é um agente especialista em SQL e análise de dados. Com base no contexto do schema abaixo, seu trabalho é:
 
-1. Gerar SQL válido usando apenas as tabelas e colunas fornecidas.
-2. Chamar a ferramenta 'executar_sql_lambda' com a consulta.
-3. Finalizar com a resposta ao usuário.
+      1. Gerar SQL válido usando apenas as tabelas e colunas fornecidas.
+      2. Chamar a ferramenta 'executar_sql_lambda' com a consulta.
+      3. Finalizar com a resposta ao usuário.
 
-Contexto:
+      Contexto:
 
-${schemaContext}
-        `.trim(),
-        suffix: "Pergunta do usuário: {input}",
-    },
+      ${schemaContext}
+              `.trim(),
+              suffix: "Pergunta do usuário: {input}",
+          },
 
         }
       );
