@@ -82,24 +82,43 @@ export async function handler(event) {
 
       const schemaContext = gerarSchemaContexto();
 
-      const tool = new DynamicTool({
-        name: "executar_sql_lambda",
-        description: "Executa comandos SQL SELECT contra o banco de dados",
-        func: async (input) => {
-          const sql = input.replace(/```sql|```/gi, "").trim();
-          const response = await lambdaClient.send(new InvokeCommand({
-            FunctionName: "mba-backend-dev-executarSql",
-            Payload: Buffer.from(JSON.stringify({ sql })),
-          }));
-          const payload = JSON.parse(Buffer.from(response.Payload).toString("utf-8"));
-          return extrairValorNumericoJson(payload);
-        }
-      });
+      const tools = [
+        new DynamicTool({
+          name: "executar_sql_lambda",
+          description: "Executa comandos SQL SELECT contra o banco de dados",
+          func: async (sql) => {
+            const cleanSql = sql.replace(/```sql|```/gi, "").trim();
+            const command = new InvokeCommand({
+              FunctionName: process.env.SQL_EXECUTE_LAMBDA,
+              Payload: Buffer.from(JSON.stringify({ sql: cleanSql })),
+            });
+
+            const response = await lambdaClient.send(command);
+            const result = JSON.parse(Buffer.from(response.Payload).toString("utf-8"));
+
+            // Interrompe o fluxo com Final Answer se for sucesso
+            if (Array.isArray(result) && result.length > 0) {
+              const chave = Object.keys(result[0])[0];
+              const valor = parseFloat(result[0][chave]).toLocaleString("pt-BR", {
+                style: "currency",
+                currency: "BRL"
+              });
+              return `Final Answer: O ${chave.replace(/_/g, ' ')} é ${valor}.`;
+            }
+
+            if (result.body && typeof result.body === "string" && result.body.includes("Final Answer")) {
+              return result.body;
+            }
+
+            return JSON.stringify(result);
+          },
+        }),
+      ];
 
         executor = await initializeAgentExecutorWithOptions(tools, model, {
         agentType: "zero-shot-react-description",
         verbose: true,
-        maxIterations: 3,
+        maxIterations: 2,
         returnIntermediateSteps: true,
         agentArgs: {
           prefix: `
