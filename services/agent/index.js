@@ -53,7 +53,7 @@ function extrairValorNumericoJson(json) {
   } catch (e) {
     return "Final Answer: Resultado recebido, mas não foi possível interpretar.";
   }
-  return resultado
+  return "Final Answer:".resultado;
   //return "Final Answer: Resultado desconhecido.";
 }
 
@@ -93,7 +93,7 @@ ${schemaContext}
 Regras:
 - Sempre use 'premioLq' para prêmios financeiros.
 - Quando filtrar produto automóvel, use produto LIKE '%auto%'.
-- Sempre ignore registros com status = 0, a menos que a pergunta diga incluir cancelados ou recusados.
+- Utilizar status != 0, a menos que a pergunta diga incluir cancelados ou recusados.
 - Datas devem estar no formato 'YYYY-MM-DD'.
 - Retorne apenas o comando SQL dentro de um bloco de código markdown: \`\`\`sql ... \`\`\`
 - Sem explicações, apenas o SQL.
