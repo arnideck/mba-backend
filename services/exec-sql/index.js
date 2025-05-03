@@ -13,12 +13,14 @@ export const handler = async (event) => {
   const body = event.body ? JSON.parse(event.body) : event;
   const sql = body.sql;
 
-  if (!sql || !/^\s*SELECT/i.test(sql)) {
-    return {
-      statusCode: 400,
-      body: JSON.stringify({ error: "Somente comandos SELECT são permitidos." }),
-    };
-  }
+  let cleanSql = sql.replace(/```sql|```/gi, "").trim();
+
+    if (!cleanSql || !/^\s*SELECT/i.test(cleanSql)) {
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ error: "Somente comandos SELECT são permitidos." }),
+      };
+    }
 
   try {
     const creds = await getCreds();
