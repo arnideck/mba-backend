@@ -84,25 +84,25 @@ export async function handler(event) {
       const prompt = new PromptTemplate({
         inputVariables: ["input"],
         template: `
-Você é um assistente de banco de dados SQL.
+              Você é um assistente de banco de dados SQL.
 
-Utilize APENAS as tabelas e colunas fornecidas abaixo para gerar as consultas:
+              Utilize APENAS as tabelas e colunas fornecidas abaixo para gerar as consultas:
 
-${schemaContext}
+              ${schemaContext}
 
-Regras:
-- Sempre use 'premioLq' para prêmios financeiros.
-- Quando filtrar produto automóvel, use produto LIKE '%auto%'.
-- Utilizar status != 0, a menos que a pergunta diga incluir cancelados ou recusados.
-- Datas devem estar no formato 'YYYY-MM-DD'.
-- Retorne apenas o comando SQL dentro de um bloco de código markdown: \`\`\`sql ... \`\`\`
-- Sem explicações, apenas o SQL.
+              Regras:
+              - Sempre use 'premioLq' para prêmios financeiros.
+              - Quando filtrar produto automóvel, use produto LIKE '%auto%'.
+              - Utilizar status != 0, a menos que a pergunta diga incluir cancelados ou recusados.
+              - Datas devem estar no formato 'YYYY-MM-DD'.
+              - Retorne apenas o comando SQL dentro de um bloco de código markdown: \`\`\`sql ... \`\`\`
+              - Sem explicações, apenas o SQL.
 
-Pergunta: {input}
+              Pergunta: {input}
 
-SQL:
-        `.trim()
-      });
+              SQL:
+                      `.trim()
+                    });
 
       const tool = new DynamicTool({
         name: "executar_sql_lambda",
@@ -124,23 +124,28 @@ SQL:
         {
           agentType: "zero-shot-react-description",
           verbose: true,
-          maxIterations: 6,
+          maxIterations: 3,
           returnIntermediateSteps: true,
           
-    agentArgs: {
-        prefix: `
-      Você é um agente especialista em SQL e análise de dados. Com base no contexto do schema abaixo, seu trabalho é:
-
-      1. Gerar SQL válido usando apenas as tabelas e colunas fornecidas.
-      2. Chamar a ferramenta 'executar_sql_lambda' com a consulta.
-      3. Finalizar com a resposta ao usuário.
-
-      Contexto:
-
-      ${schemaContext}
-              `.trim(),
-              suffix: "Pergunta do usuário: {input}",
-          },
+          agentArgs: {
+            prefix: `
+          Você é um assistente de banco de dados SQL.
+          
+          Regras obrigatórias:
+          - Utilize apenas as tabelas e colunas fornecidas abaixo.
+          - Sempre use 'premioLq' para prêmios financeiros.
+          - Ao filtrar produto automóvel, utilize produto LIKE '%auto%'.
+          - Sempre filtre por status != 0, a menos que a pergunta peça para incluir cancelados ou recusados.
+          - Datas devem estar no formato 'YYYY-MM-DD'.
+          - Gere apenas SQL válido, dentro de um bloco markdown: \`\`\`sql ... \`\`\`
+          
+          Contexto do banco de dados:
+          
+          ${schemaContext}
+          `.trim(),
+            suffix: "Pergunta do usuário: {input}",
+          }
+          
 
         }
       );
