@@ -123,7 +123,7 @@ SQL:
         {
           agentType: "zero-shot-react-description",
           verbose: true,
-          maxIterations: 6,
+         // maxIterations: 6,
           returnIntermediateSteps: true,
           
     agentArgs: {
