@@ -75,34 +75,12 @@ export async function handler(event) {
 
       const model = new ChatOpenAI({
         temperature: 0,
-        modelName: "gpt-4o",
+        modelName: "gpt-3.5-turbo-1106",
         openAIApiKey: process.env.OPENAI_API_KEY,
+        maxTokens: 1000,
       });
 
       const schemaContext = gerarSchemaContexto();
-
-      const prompt = new PromptTemplate({
-        inputVariables: ["input"],
-        template: `
-              Você é um assistente de banco de dados SQL.
-
-              Utilize APENAS as tabelas e colunas fornecidas abaixo para gerar as consultas:
-
-              ${schemaContext}
-
-              Regras:
-              - Sempre use 'premioLq' para prêmios financeiros.
-              - Quando filtrar produto automóvel, use produto LIKE '%auto%'.
-              - Utilizar status != 0, a menos que a pergunta diga incluir cancelados ou recusados.
-              - Datas devem estar no formato 'YYYY-MM-DD'.
-              - Retorne apenas o comando SQL dentro de um bloco de código markdown: \`\`\`sql ... \`\`\`
-              - Sem explicações, apenas o SQL.
-
-              Pergunta: {input}
-
-              SQL:
-                      `.trim()
-                    });
 
       const tool = new DynamicTool({
         name: "executar_sql_lambda",
@@ -118,37 +96,29 @@ export async function handler(event) {
         }
       });
 
-      executor = await initializeAgentExecutorWithOptions(
-        [tool],
-        model,
-        {
-          agentType: "zero-shot-react-description",
-          verbose: true,
-          maxIterations: 3,
-          returnIntermediateSteps: true,
+        executor = await initializeAgentExecutorWithOptions(tools, model, {
+        agentType: "zero-shot-react-description",
+        verbose: true,
+        maxIterations: 3,
+        returnIntermediateSteps: true,
+        agentArgs: {
+          prefix: `
+          Você é um assistente SQL rigoroso.
           
-          agentArgs: {
-            prefix: `
-          Você é um assistente de banco de dados SQL.
+          REGRAS OBRIGATÓRIAS (não ignore):
+          - Use SOMENTE as tabelas e colunas abaixo.
+          - Sempre use 'premioLq' para valores de prêmio.
+          - Produto automóvel deve ser filtrado com: produto LIKE '%auto%'.
+          - Sempre inclua no WHERE: status != 0 (exceto se o usuário pedir cancelados/recusados).
+          - Use datas no formato: 'YYYY-MM-DD'.
+          - Responda somente com o SQL em bloco \`\`\`sql ... \`\`\`, sem explicações.
           
-          Regras obrigatórias:
-          - Utilize apenas as tabelas e colunas fornecidas abaixo.
-          - Sempre use 'premioLq' para prêmios financeiros.
-          - Ao filtrar produto automóvel, utilize produto LIKE '%auto%'.
-          - Sempre filtre por status != 0, a menos que a pergunta peça para incluir cancelados ou recusados.
-          - Datas devem estar no formato 'YYYY-MM-DD'.
-          - Gere apenas SQL válido, dentro de um bloco markdown: \`\`\`sql ... \`\`\`
-          
-          Contexto do banco de dados:
-          
-          ${schemaContext}
-          `.trim(),
-            suffix: "Pergunta do usuário: {input}",
-          }
-          
-
-        }
-      );
+          ${SchemaContexto}
+              `.trim(),
+              suffix: "Pergunta do usuário: {input}"
+            },
+      });
+      
     }
 
     const result = await executor.invoke({ input: question });
