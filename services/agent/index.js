@@ -125,7 +125,22 @@ SQL:
           verbose: true,
           maxIterations: 3,
           returnIntermediateSteps: true,
-          agentArgs: { prompt }
+          
+    agentArgs: {
+        prefix: `
+Você é um agente especialista em SQL e análise de dados. Com base no contexto do schema abaixo, seu trabalho é:
+
+1. Gerar SQL válido usando apenas as tabelas e colunas fornecidas.
+2. Chamar a ferramenta 'executar_sql_lambda' com a consulta.
+3. Finalizar com a resposta ao usuário.
+
+Contexto:
+
+${schemaContext}
+        `.trim(),
+        suffix: "Pergunta do usuário: {input}",
+    },
+
         }
       );
     }
