@@ -1,38 +1,46 @@
-// services/executar-sql/index.js
+import mysql from "mysql2/promise";
+import { SecretsManagerClient, GetSecretValueCommand } from "@aws-sdk/client-secrets-manager";
 
-import AWS from "aws-sdk";
-import axios from "axios";
+const secretsClient = new SecretsManagerClient({ region: process.env.AWS_REGION });
 
-const secretsManager = new AWS.SecretsManager({ region: process.env.AWS_REGION });
-let credsCache = null;
-async function getCredentials() {
-  if (!credsCache) {
-    const { SecretString, SecretBinary } = await secretsManager
-      .getSecretValue({ SecretId: "credenciaisMba" })
-      .promise();
-    const raw = SecretString ?? Buffer.from(SecretBinary, "base64").toString();
-    credsCache = JSON.parse(raw);
+async function getCreds() {
+  const command = new GetSecretValueCommand({ SecretId: process.env.SECRET_NAME });
+  const { SecretString } = await secretsClient.send(command);
+  return JSON.parse(SecretString);
+}
+
+export const handler = async (event) => {
+  const body = event.body ? JSON.parse(event.body) : event;
+  const sql = body.sql;
+
+  if (!sql || !/^\s*SELECT/i.test(sql)) {
+    return {
+      statusCode: 400,
+      body: JSON.stringify({ error: "Somente comandos SELECT são permitidos." }),
+    };
   }
-  return credsCache;
-}
 
-export async function handler(event) {
-  // 1) recupera URL e token
-  const { LARAVEL_API_URL, LARAVEL_TOKEN } = await getCredentials();
+  try {
+    const creds = await getCreds();
+    const connection = await mysql.createConnection({
+      host: creds.host,
+      user: creds.user,
+      password: creds.password,
+      port: creds.port,
+      database: creds.database
+    });
 
-  // 2) extrai query do payload
-  const { input } = JSON.parse(event.body || JSON.stringify(event));
+    const [rows] = await connection.execute(sql);
+    await connection.end();
 
-  // 3) chama a API Laravel
-  const resposta = await axios.post(
-    `${LARAVEL_API_URL}/executar-sql`,
-    { query: input },
-    { headers: { Authorization: `Bearer ${LARAVEL_TOKEN}` } }
-  );
-
-  // 4) devolve resultado
-  return {
-    statusCode: 200,
-    body: JSON.stringify({ result: resposta.data }),
-  };
-}
+    return {
+      statusCode: 200,
+      body: JSON.stringify(rows),
+    };
+  } catch (err) {
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ error: err.message }),
+    };
+  }
+};

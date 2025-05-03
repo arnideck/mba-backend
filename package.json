@@ -13,7 +13,8 @@
     "@langchain/core": "^0.3.49",
     "@langchain/openai": "^0.5.7",
     "axios": "^1.8.4",
-    "langchain": "^0.3.24"
+    "langchain": "^0.3.24",
+    "mysql2": "^3.9.0"
   },
   "devDependencies": {
     "serverless": "^3.38.0",
