@@ -53,7 +53,8 @@ function extrairValorNumericoJson(json) {
   } catch (e) {
     return "Final Answer: Resultado recebido, mas não foi possível interpretar.";
   }
-  return "Final Answer: Resultado desconhecido.";
+  return resultado
+  //return "Final Answer: Resultado desconhecido.";
 }
 
 export async function handler(event) {
