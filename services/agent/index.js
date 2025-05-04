@@ -62,6 +62,18 @@ export async function handler(event) {
     const body = event.body ? JSON.parse(event.body) : event;
     const question = body.question;
 
+    if (event.requestContext?.http?.method === 'OPTIONS') {
+      return {
+        statusCode: 200,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+          'Access-Control-Allow-Methods': 'OPTIONS,POST',
+        },
+        body: '',
+      };
+    }
+
     if (!question) {
       return {
         statusCode: 400,
