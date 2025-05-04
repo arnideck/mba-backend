@@ -4,6 +4,7 @@ import { initializeAgentExecutorWithOptions } from "langchain/agents";
 import { DynamicTool } from "langchain/tools";
 import { getSchema } from "../schema-inspector/getDatabaseSchema.js";
 import { LambdaClient, InvokeCommand } from "@aws-sdk/client-lambda";
+import { verificarToken } from "./auth.js";
 
 // Secrets Manager
 const secretsClient = new SecretsManagerClient({ region: process.env.AWS_REGION });
@@ -65,6 +66,25 @@ export async function handler(event) {
       return {
         statusCode: 400,
         body: JSON.stringify({ error: "Campo 'question' é obrigatório." }),
+      };
+    }
+
+    const authHeader = event.headers?.Authorization || event.headers?.authorization;
+
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return {
+        statusCode: 401,
+        body: JSON.stringify({ error: "Não autorizado" }),
+      };
+    }
+
+    const token = authHeader.split(" ")[1];
+    const payload = verificarToken(token);
+
+    if (!payload) {
+      return {
+        statusCode: 403,
+        body: JSON.stringify({ error: "Token inválido ou expirado" }),
       };
     }
 
