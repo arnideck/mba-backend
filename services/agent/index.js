@@ -65,6 +65,11 @@ export async function handler(event) {
     if (!question) {
       return {
         statusCode: 400,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+          'Access-Control-Allow-Methods': 'POST,OPTIONS',
+        },
         body: JSON.stringify({ error: "Campo 'question' é obrigatório." }),
       };
     }
@@ -74,6 +79,11 @@ export async function handler(event) {
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
       return {
         statusCode: 401,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+          'Access-Control-Allow-Methods': 'POST,OPTIONS',
+        },
         body: JSON.stringify({ error: "Não autorizado" }),
       };
     }
@@ -84,6 +94,11 @@ export async function handler(event) {
     if (!payload) {
       return {
         statusCode: 403,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+          'Access-Control-Allow-Methods': 'POST,OPTIONS',
+        },
         body: JSON.stringify({ error: "Token inválido ou expirado" }),
       };
     }
@@ -175,6 +190,11 @@ export async function handler(event) {
 
     return {
       statusCode: 200,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+        'Access-Control-Allow-Methods': 'POST,OPTIONS',
+      },
       body: JSON.stringify({
         resposta: result.output,
         raciocinio: result.intermediateSteps
@@ -184,6 +204,11 @@ export async function handler(event) {
     console.error("Erro no handler:", err);
     return {
       statusCode: 500,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+        'Access-Control-Allow-Methods': 'POST,OPTIONS',
+      },
       body: JSON.stringify({ error: "Erro inesperado", details: err.message }),
     };
   }
