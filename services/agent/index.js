@@ -88,7 +88,8 @@ export async function handler(event) {
           func: async (sql) => {
             const cleanSql = sql.replace(/```sql|```/gi, "").trim();
             const command = new InvokeCommand({
-              FunctionName: "mba-backend-dev-executarsql",
+              FunctionName: "mba-backend-dev-executarSql",
+              InvocationType: "RequestResponse", // ou "Event" se quiser assíncrono
               Payload: Buffer.from(JSON.stringify({ sql: cleanSql })),
             });
 
