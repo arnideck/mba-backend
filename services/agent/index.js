@@ -59,9 +59,6 @@ function extrairValorNumericoJson(json) {
 
 export async function handler(event) {
   try {
-    const body = event.body ? JSON.parse(event.body) : event;
-    const question = body.question;
-
     if (event.requestContext?.http?.method === 'OPTIONS') {
       return {
         statusCode: 200,
@@ -73,6 +70,10 @@ export async function handler(event) {
         body: '',
       };
     }
+
+
+    const body = event.body ? JSON.parse(event.body) : event;
+    const question = body.question;
 
     if (!question) {
       return {
