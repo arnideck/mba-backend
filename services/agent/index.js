@@ -89,27 +89,37 @@ export async function handler(event) {
             const cleanSql = sql.replace(/```sql|```/gi, "").trim();
             const command = new InvokeCommand({
               FunctionName: "mba-backend-dev-executarSql",
-              InvocationType: "RequestResponse", // ou "Event" se quiser assíncrono
+              InvocationType: "RequestResponse",
               Payload: Buffer.from(JSON.stringify({ sql: cleanSql })),
             });
-
+          
             const response = await lambdaClient.send(command);
             const result = JSON.parse(Buffer.from(response.Payload).toString("utf-8"));
-
-            // Interrompe o fluxo com Final Answer se for sucesso
-            if (Array.isArray(result) && result.length > 0) {
-              const chave = Object.keys(result[0])[0];
-              const valor = parseFloat(result[0][chave]).toLocaleString("pt-BR", {
+          
+            let raw = [];
+          
+            if (result.body && typeof result.body === "string") {
+              try {
+                raw = JSON.parse(result.body);
+              } catch (e) {
+                console.error("Erro ao fazer parse do body:", result.body);
+                return "Final Answer: Erro ao processar o resultado da consulta SQL.";
+              }
+            }
+          
+            if (Array.isArray(raw) && raw.length > 0) {
+              const chave = Object.keys(raw[0])[0];
+              const valor = parseFloat(raw[0][chave]).toLocaleString("pt-BR", {
                 style: "currency",
                 currency: "BRL"
               });
               return `Final Answer: O ${chave.replace(/_/g, ' ')} é ${valor}.`;
             }
-
+          
             if (result.body && typeof result.body === "string" && result.body.includes("Final Answer")) {
               return result.body;
             }
-
+          
             return JSON.stringify(result);
           },
         }),
@@ -118,7 +128,7 @@ export async function handler(event) {
         executor = await initializeAgentExecutorWithOptions(tools, model, {
         agentType: "zero-shot-react-description",
         verbose: true,
-        maxIterations: 2,
+        maxIterations: 5,
         returnIntermediateSteps: true,
         agentArgs: {
           prefix: `
