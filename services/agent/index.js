@@ -88,7 +88,7 @@ export async function handler(event) {
           func: async (sql) => {
             const cleanSql = sql.replace(/```sql|```/gi, "").trim();
             const command = new InvokeCommand({
-              FunctionName: process.env.SQL_EXECUTE_LAMBDA,
+              FunctionName: "mba-backend-dev-executarsql",
               Payload: Buffer.from(JSON.stringify({ sql: cleanSql })),
             });
 
@@ -125,6 +125,7 @@ export async function handler(event) {
           
           REGRAS OBRIGATÓRIAS (não ignore):
           - Use SOMENTE as tabelas e colunas abaixo.
+          - Somente utilizar a tabela 'endossos' quando for solicitado explícitamente.
           - Sempre use 'premioLq' para valores de prêmio.
           - Produto automóvel deve ser filtrado com: produto LIKE '%auto%'.
           - Sempre inclua no WHERE: status != 0 (exceto se o usuário pedir cancelados/recusados).
