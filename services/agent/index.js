@@ -139,7 +139,7 @@ export async function handler(event) {
           - Somente utilizar a tabela 'endossos' quando for solicitado explícitamente.
           - Sempre use 'premioLq' para valores de prêmio.
           - Produto automóvel deve ser filtrado com: produto LIKE '%auto%'.
-          - Sempre inclua no WHERE: status != 0 (exceto se o usuário pedir cancelados/recusados).
+          - Ignore registros com status = 0, a menos que a pergunta diga o contrário.
           - Use datas no formato: 'YYYY-MM-DD'.
           - Responda somente com o SQL em bloco \`\`\`sql ... \`\`\`, sem explicações.
           
