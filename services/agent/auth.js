@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 
 export function gerarToken(payload) {
-  return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "1h" });
+  return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "7d" });
 }
 
 export function verificarToken(token) {
