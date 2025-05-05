@@ -9,7 +9,7 @@ async function getJwtSecret() {
 
   const client = new SecretsManagerClient({ region: "us-east-1" });
   const command = new GetSecretValueCommand({
-    SecretId: "JWT_SECRET_MBA", // Nome do segredo
+    SecretId: "JWT_SECRET", // Nome do segredo
   });
 
   const response = await client.send(command);
