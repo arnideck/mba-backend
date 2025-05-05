@@ -102,7 +102,7 @@ export async function handler(event) {
     }
 
     const token = authHeader.split(" ")[1];
-    const payload = verificarToken(token);
+    const payload = await verificarToken(token);
 
     if (!payload) {
       return {
@@ -112,7 +112,7 @@ export async function handler(event) {
           'Access-Control-Allow-Headers': 'Content-Type, Authorization',
           'Access-Control-Allow-Methods': 'POST,OPTIONS',
         },
-        body: JSON.stringify({ error: "Token inválido ou expirado".token }),
+        body: JSON.stringify({ error: "Token inválido ou expirado" }),
       };
     }
 
