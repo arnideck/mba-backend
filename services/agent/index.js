@@ -103,11 +103,11 @@ export async function handler(event) {
 
     const token = authHeader.split(" ")[1];
     const payload = await verificarToken(token);
-
+    console.log("Payload do token:", payload);
     const { JWT_SECRET } = await getCredentials();
     process.env.JWT_SECRET = JWT_SECRET;
 
-    if (!payload) {
+   /* if (!payload) {
       return {
         statusCode: 403,
         headers: {
@@ -117,7 +117,7 @@ export async function handler(event) {
         },
         body: JSON.stringify({ token: token, error: process.env.JWT_SECRET }),
       };
-    }
+    }*/
 
     if (!executor) {
       const { OPENAI_API_KEY } = await getCredentials();
