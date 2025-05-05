@@ -206,8 +206,14 @@ export async function handler(event) {
 
     // Se algum dos passos intermediários tiver um observation com "Final Answer", usamos ele
     let respostaFinal = result.output;
+
+    // Percorre de trás pra frente até encontrar um passo com "Final Answer" válido
     for (const step of result.intermediateSteps.reverse()) {
-      if (typeof step.observation === 'string' && step.observation.includes("Final Answer")) {
+      if (
+        typeof step.observation === 'string' &&
+        step.observation.includes("Final Answer") &&
+        !step.observation.includes("NaN")
+      ) {
         respostaFinal = step.observation;
         break;
       }
