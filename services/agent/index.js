@@ -204,6 +204,15 @@ export async function handler(event) {
 
     const result = await executor.invoke({ input: question });
 
+    // Se algum dos passos intermediários tiver um observation com "Final Answer", usamos ele
+    let respostaFinal = result.output;
+    for (const step of result.intermediateSteps.reverse()) {
+      if (typeof step.observation === 'string' && step.observation.includes("Final Answer")) {
+        respostaFinal = step.observation;
+        break;
+      }
+    }
+
     return {
       statusCode: 200,
       headers: {
@@ -212,7 +221,7 @@ export async function handler(event) {
         'Access-Control-Allow-Methods': 'POST,OPTIONS',
       },
       body: JSON.stringify({
-        resposta: result.output,
+        resposta: respostaFinal,
         raciocinio: result.intermediateSteps
       }),
     };
