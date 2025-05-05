@@ -104,6 +104,9 @@ export async function handler(event) {
     const token = authHeader.split(" ")[1];
     const payload = await verificarToken(token);
 
+    const { JWT_SECRET } = await getCredentials();
+    process.env.JWT_SECRET = JWT_SECRET;
+
     if (!payload) {
       return {
         statusCode: 403,
@@ -112,7 +115,7 @@ export async function handler(event) {
           'Access-Control-Allow-Headers': 'Content-Type, Authorization',
           'Access-Control-Allow-Methods': 'POST,OPTIONS',
         },
-        body: JSON.stringify({ error: "Token inválido ou expirado" }),
+        body: JSON.stringify({ token: token, error: process.env.JWT_SECRET }),
       };
     }
 
