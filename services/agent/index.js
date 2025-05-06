@@ -158,21 +158,34 @@ export async function handler(event) {
               }
             }
           
-            if (Array.isArray(raw) && raw.length > 0) {
-              const chave = Object.keys(raw[0])[0];
-              const valor = parseFloat(raw[0][chave]).toLocaleString("pt-BR", {
-                style: "currency",
-                currency: "BRL"
+            // ✅ Múltiplas linhas (tabela)
+            if (Array.isArray(raw) && raw.length > 1) {
+              const colunas = Object.keys(raw[0]);
+              const cabecalho = colunas.join(" | ");
+              const separador = colunas.map(() => "---").join(" | ");
+              const linhas = raw.map((linha, i) => {
+                const valores = colunas.map(col => {
+                  const valor = linha[col];
+                  return typeof valor === "number" ? formatarValor(valor) : valor;
+                });
+                return `${i + 1}. ${valores.join(" | ")}`;
               });
-              return `Final Answer: O ${chave.replace(/_/g, ' ')} é ${valor}.`;
+          
+              return `Final Answer:\n${cabecalho}\n${separador}\n${linhas.join("\n")}`;
             }
           
-            if (result.body && typeof result.body === "string" && result.body.includes("Final Answer")) {
+            // ✅ Valor único com formatação
+            if (Array.isArray(raw) && raw.length === 1) {
+              return extrairValorNumericoJson(raw);
+            }
+          
+            if (typeof result.body === "string" && result.body.includes("Final Answer")) {
               return result.body;
             }
           
-            return JSON.stringify(result);
-          },
+            return "Final Answer: Nenhum dado encontrado.";
+          }
+          
         }),
       ];
 
@@ -183,16 +196,23 @@ export async function handler(event) {
         returnIntermediateSteps: true,
         agentArgs: {
           prefix: `
-          Você é um assistente SQL rigoroso.
-          
-          REGRAS OBRIGATÓRIAS (não ignore):
-          - Use SOMENTE as tabelas e colunas abaixo.
-          - Somente utilizar a tabela 'endossos' quando for solicitado explícitamente.
-          - Sempre use 'premioLq' para valores de prêmio.
-          - Produto automóvel deve ser filtrado com: produto LIKE '%auto%'.
-          - Ignore registros com status = 0, a menos que a pergunta diga o contrário.
-          - Use datas no formato: 'YYYY-MM-DD'.
-          - Responda somente com o SQL em bloco \`\`\`sql ... \`\`\`, sem explicações.
+          Você é um agente SQL.  
+            Você tem à disposição duas ferramentas:
+            - schema_inspector: para ver tabelas e colunas (ex: "schema_inspector: colunas de producoes?")
+            - executar_sql_lambda: para executar SELECTs válidos e retornar JSON.
+
+            Regras de negócio:
+            1) Nunca use tabelas/colunas fora do schema_inspector.
+            2) Use sempre campo premioLq para prêmios.
+            3) Ao filtrar automóvel, use produto LIKE '%auto%'.
+            4) Sempre filtre status != 0, a menos que digam o contrário.
+            5) Datas em 'YYYY-MM-DD'.
+            6) Gere apenas um bloco markdown com SQL; sem explicações.
+
+            Usuário: {input}
+
+            Agente, qual sequência de chamadas de ferramenta você fará (não responda com SQL direto aqui)?
+            Após pensar, invoque as ferramentas conforme necessário.
           
           ${schemaContext}
               `.trim(),
