@@ -196,24 +196,30 @@ export async function handler(event) {
         returnIntermediateSteps: true,
         agentArgs: {
           prefix: `
-          Você é um agente SQL.  
-            Você tem à disposição duas ferramentas:
-            - schema_inspector: para ver tabelas e colunas (ex: "schema_inspector: colunas de producoes?")
-            - executar_sql_lambda: para executar SELECTs válidos e retornar JSON.
+          You are a SQL agent.
+            Always respond strictly in English using the following format:
+            Thought: ...
+            Action: ...
+            Action Input: ...
+            Observation: ...
+            Final Answer: ...
 
-            Regras de negócio:
-            1) Nunca use tabelas/colunas fora do schema_inspector.
-            2) Use sempre campo premioLq para prêmios.
-            3) Ao filtrar automóvel, use produto LIKE '%auto%'.
-            4) Sempre filtre status != 0, a menos que digam o contrário.
-            5) Datas em 'YYYY-MM-DD'.
-            6) Gere apenas um bloco markdown com SQL; sem explicações.
+            You have access to the following tools:
+            - schema_inspector: to inspect table and column metadata.
+            - executar_sql_lambda: to execute valid SQL SELECT queries and return JSON.
 
-            Usuário: {input}
+            Business rules:
+            1) Never use tables/columns outside schema_inspector.
+            2) Always use premioLq for premium values.
+            3) To filter automobiles, use produto LIKE '%auto%'.
+            4) Always filter status != 0 unless stated otherwise.
+            5) Dates must be in 'YYYY-MM-DD'.
+            6) Only return SQL inside one markdown block; no explanations.
 
-            Agente, qual sequência de chamadas de ferramenta você fará (não responda com SQL direto aqui)?
-            Após pensar, invoque as ferramentas conforme necessário.
-          
+            User: {input}
+
+            Agent, what sequence of tool calls will you make (do not respond with SQL directly here)?
+            After thinking, invoke the tools as necessary.          
           ${schemaContext}
               `.trim(),
               suffix: "Pergunta do usuário: {input}"
