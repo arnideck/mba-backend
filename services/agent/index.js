@@ -72,6 +72,20 @@ function extrairColunasDoSQL(sql) {
   });
 }
 
+function validarTabelas(sql) {
+  const schema = getSchema();
+  const tabelasValidas = Object.keys(schema);
+
+  const matchesFrom = sql.match(/from\s+([\w]+)/gi) || [];
+  const matchesJoin = sql.match(/join\s+([\w]+)/gi) || [];
+
+  const tabelasUsadas = [...matchesFrom, ...matchesJoin].map(m =>
+    m.replace(/(from|join)\s+/i, '').trim()
+  );
+
+  const tabelasInvalidas = tabelasUsadas.filter(t => !tabelasValidas.includes(t));
+  return tabelasInvalidas;
+}
 
 function validarColunas(sql) {
   const schema = getSchema();
