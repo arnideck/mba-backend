@@ -90,7 +90,7 @@ function validarTabelas(sql) {
 function validarColunas(sql) {
   const schema = getSchema();
   const colunasValidas = Object.values(schema).flatMap(tabela =>
-    Object.keys(tabela.colunas || {})
+    Object.keys(tabela.colunas || {}).map(c => c.toLowerCase())
   );
 
   const colunasUsadas = extrairColunasDoSQL(sql.toLowerCase());
