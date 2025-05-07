@@ -57,6 +57,34 @@ function extrairValorNumericoJson(json) {
   //return "Final Answer: Resultado desconhecido.";
 }
 
+function extrairColunasDoSQL(sql) {
+  const selectMatch = sql.match(/select\s+(.+?)\s+from\s/i);
+  if (!selectMatch || selectMatch.length < 2) return [];
+
+  const rawCampos = selectMatch[1].split(",").map(campo => campo.trim());
+
+  return rawCampos.map(campo => {
+    let semAlias = campo.toLowerCase().split(" as ")[0].trim();
+    const funcaoMatch = semAlias.match(/\((.*?)\)/);
+    if (funcaoMatch) semAlias = funcaoMatch[1];
+    const partes = semAlias.split(".");
+    return partes[partes.length - 1];
+  });
+}
+
+
+function validarColunas(sql) {
+  const schema = getSchema();
+  const colunasValidas = Object.values(schema).flatMap(tabela =>
+    Object.keys(tabela.colunas || {})
+  );
+
+  const colunasUsadas = extrairColunasDoSQL(sql.toLowerCase());
+  const colunasInvalidas = colunasUsadas.filter(col => !colunasValidas.includes(col));
+
+  return colunasInvalidas;
+}
+
 export async function handler(event) {
   try {
     if (event.requestContext?.http?.method === 'OPTIONS') {
@@ -138,6 +166,19 @@ export async function handler(event) {
           description: "Executa comandos SQL SELECT contra o banco de dados",
           func: async (sql) => {
             const cleanSql = sql.replace(/```sql|```/gi, "").trim();
+
+            // Valida tabelas
+            const tabelasInvalidas = validarTabelas(cleanSql);
+            if (tabelasInvalidas.length > 0) {
+              return `Final Answer: As tabelas inválidas encontradas foram: ${tabelasInvalidas.join(", ")}. Use apenas tabelas definidas no schema_inspector.`;
+            }
+
+            // Valida colunas
+            const colunasInvalidas = validarColunas(cleanSql);
+            if (colunasInvalidas.length > 0) {
+              return `Final Answer: As colunas inválidas encontradas foram: ${colunasInvalidas.join(", ")}. Use apenas colunas definidas no schema_inspector.`;
+            }
+
             const command = new InvokeCommand({
               FunctionName: "mba-backend-dev-executarSql",
               InvocationType: "RequestResponse",
@@ -197,29 +238,29 @@ export async function handler(event) {
         agentArgs: {
           prefix: `
           You are a SQL agent.
-            Always respond strictly in English using the following format:
-            Thought: ...
-            Action: ...
-            Action Input: ...
-            Observation: ...
-            Final Answer: ...
+          Always respond strictly in English using the following format:
+          Thought: ...
+          Action: ...
+          Action Input: ...
+          Observation: ...
+          Final Answer: ...
 
-            You have access to the following tools:
-            - schema_inspector: to inspect table and column metadata.
-            - executar_sql_lambda: to execute valid SQL SELECT queries and return JSON.
+          You have access to the following tools:
+          - schema_inspector: to inspect table and column metadata.
+          - executar_sql_lambda: to execute valid SQL SELECT queries and return JSON.
 
-            Business rules:
-            1) Never use tables/columns outside schema_inspector.
-            2) Always use premioLq for premium values.
-            3) To filter automobiles, use produto LIKE '%auto%'.
-            4) Always filter status != 0 unless stated otherwise.
-            5) Dates must be in 'YYYY-MM-DD'.
-            6) Only return SQL inside one markdown block; no explanations.
+          Strict rules:
+          1) It is strictly forbidden to use any table or column not listed in the schema_inspector.
+          2) If you reference a column or table that does not exist, you will be penalized.
+          3) Always use premioLq for premium values.
+          4) To filter automobiles, use produto LIKE '%auto%'.
+          5) Always filter status != 0 unless the question says otherwise.
+          6) Dates must be in 'YYYY-MM-DD'.
+          7) Return SQL inside one markdown block. No explanations.
 
-            User: {input}
+          User: {input}
 
-            Agent, what sequence of tool calls will you make (do not respond with SQL directly here)?
-            After thinking, invoke the tools as necessary.          
+          Agent, what is your plan?          
           ${schemaContext}
               `.trim(),
               suffix: "Pergunta do usuário: {input}"
