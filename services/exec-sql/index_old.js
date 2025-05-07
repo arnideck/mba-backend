@@ -1,4 +1,3 @@
-
 import mysql from "mysql2/promise";
 import { SecretsManagerClient, GetSecretValueCommand } from "@aws-sdk/client-secrets-manager";
 
@@ -11,17 +10,8 @@ async function getCreds() {
 }
 
 export const handler = async (event) => {
-  let sql;
-
-  try {
-    const body = event.body ? JSON.parse(event.body) : event;
-    sql = body.sql;
-  } catch (e) {
-    return {
-      statusCode: 400,
-      body: JSON.stringify({ error: "Requisição malformada ou sem SQL." }),
-    };
-  }
+  const body = event.body ? JSON.parse(event.body) : event;
+  const sql = body.sql;
 
   let cleanSql = sql
     .replace(/```sql/gi, "")  // remove início de bloco
@@ -47,8 +37,6 @@ export const handler = async (event) => {
 
     const [rows] = await connection.execute(cleanSql);
     await connection.end();
-
-    console.log("Resultado SQL:", rows);
 
     return {
       statusCode: 200,
