@@ -63,14 +63,19 @@ function extrairColunasDoSQL(sql) {
 
   const rawCampos = selectMatch[1].split(",").map(campo => campo.trim());
 
-  return rawCampos.map(campo => {
-    let semAlias = campo.toLowerCase().split(" as ")[0].trim();
-    const funcaoMatch = semAlias.match(/\((.*?)\)/);
-    if (funcaoMatch) semAlias = funcaoMatch[1];
-    const partes = semAlias.split(".");
-    return partes[partes.length - 1];
-  });
+  return rawCampos
+    .map(campo => {
+      if (campo === "*") return null;
+
+      let semAlias = campo.toLowerCase().split(" as ")[0].trim();
+      const funcaoMatch = semAlias.match(/\((.*?)\)/);
+      if (funcaoMatch) semAlias = funcaoMatch[1];
+      const partes = semAlias.split(".");
+      return partes[partes.length - 1];
+    })
+    .filter(col => col && col !== "*");
 }
+
 
 function validarTabelas(sql) {
   const schema = getSchema();
