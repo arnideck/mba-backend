@@ -273,9 +273,11 @@ export async function handler(event) {
           2) If you reference a column or table that does not exist, you will be penalized.
           3) Always use premioLq for premium values.
           4) To filter automobiles, use produto LIKE '%auto%'.
-          5) Always filter status != 0 unless the question says otherwise.
-          6) Dates must be in 'YYYY-MM-DD'.
-          7) Return SQL inside one markdown block. No explanations.
+          5) Dates must be in 'YYYY-MM-DD'.
+          6) Return SQL inside one markdown block. No explanations.
+          7) Use exclusively the view vw_producao_completa for all queries. Do not use any other table.
+
+
 
           User: {input}
 
