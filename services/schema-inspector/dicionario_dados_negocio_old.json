@@ -1,0 +1,1019 @@
+{
+  "ativos": {
+    "descricao": "Tabela 'ativos' utilizada para controle e registro de comissões recebidas das Seguradoras / Cias. Ativos financeiros utilizados para compor o relatório de balanço financeiro mensal.",
+    "colunas": {
+      "id": {
+        "tipo": "int(10)",
+        "descricao": "Identificador único da tabela"
+      },
+      "nome": {
+        "tipo": "varchar(100)",
+        "descricao": "Texto descritivo ou nome"
+      },
+      "dataPG": {
+        "tipo": "date",
+        "descricao": "Data de pagamento da comissão"
+      },
+      "cdc": {
+        "tipo": "int(10)",
+        "descricao": "Centro de custo, filial ou unidade.(chave estrangeira)"
+      },
+      "grupo": {
+        "tipo": "int(10)",
+        "descricao": "Grupo de ativos (chave estrangeira)"
+      },
+      "subgrupo": {
+        "tipo": "int(10)",
+        "descricao": "Subgrupos de ativos (chave estrangeira)"
+      },
+      "valorPG": {
+        "tipo": "decimal(10,2)",
+        "descricao": "Valor recebido de repasse"
+      },
+      "obs": {
+        "tipo": "varchar(250)",
+        "descricao": "Campo da tabela"
+      },
+      "created_at": {
+        "tipo": "timestamp",
+        "descricao": "data de criação do registro"
+      },
+      "updated_at": {
+        "tipo": "timestamp",
+        "descricao": "data da última atualização do registro"
+      },
+      "relacoes": {
+        "cdc": {
+          "tabela": "cdcs",
+          "coluna": "id",
+          "descricao": "Relaciona com o centro de custo, unidade ou filial correspondente"
+        },
+        "grupo": {
+          "tabela": "grupos",
+          "coluna": "id",
+          "descricao": "Indica o grupo de ativos"
+        },
+        "subgrupo": {
+          "tabela": "subgrupos",
+          "coluna": "id",
+          "descricao": "Indica o subgrupo de ativos"
+        }
+      }
+    }
+  },
+  "beneficios": {
+    "descricao": "Tabela 'beneficios' utilizada para controle de apólices/produções de saúde, vida, odonto e seguro viagem feitos pelo setor de Benefícios.",
+    "colunas": {
+      "id": {
+        "tipo": "int(10)",
+        "descricao": "Identificador único da tabela (chave primária)."
+      },
+      "produtor": {
+        "tipo": "int(10)",
+        "descricao": "Produtor responsável pela produção (chave estrangeira). Id do produtor."
+      },
+      "analista": {
+        "tipo": "int(10)",
+        "descricao": "Analista responsável pela produção (chave estrangeira). Id do analista."
+      },
+      "produto": {
+        "tipo": "int(10)",
+        "descricao": "Produto comercializado, tipo do produto definido pela Seguradora (chave estrangeira). Id do produto."
+      },
+      "vigencia": {
+        "tipo": "date",
+        "descricao": "Data de vigência inicial da apólice."
+      },
+      "vidas": {
+        "tipo": "int(11)",
+        "descricao": "Quantidade de vidas que compõe a apólice de seguro."
+      },
+      "estipulante": {
+        "tipo": "int(10)",
+        "descricao": "Identificação da empresa contratante ou pessoa física (chave estrangeira). Id do estipulante."
+      },
+      "created_at": {
+        "tipo": "timestamp",
+        "descricao": "data de criação do registro"
+      },
+      "updated_at": {
+        "tipo": "timestamp",
+        "descricao": "data da última atualização do registro"
+      },
+      "relacoes": {
+        "analista": {
+          "tabela": "analistas",
+          "coluna": "id",
+          "descricao": "Indica o Analista vinculado ao processo."
+        },
+        "produtor": {
+          "tabela": "produtores",
+          "coluna": "id",
+          "descricao": "Indica o produtor responsável da Apólice de seguro."
+        },
+        "produto": {
+          "tabela": "produtoBeneficios",
+          "coluna": "id",
+          "descricao": "Indica o produto correspondente."
+        },
+        "estipulante": {
+          "tabela": "estipulantes",
+          "coluna": "id",
+          "descricao": "Relaciona com a empresa estipulante do contrato."
+        }
+      }
+    }
+  },
+  "cdcs": {
+    "descricao": "Tabela 'cdcs' utilizada para identificar as filiais, unidades ou centro de custos. Utilizado somente para as tabelas ativos e passivos.",
+    "colunas": {
+      "id": {
+        "tipo": "int(10)",
+        "descricao": "Identificador único da tabela (chave primária)"
+      },
+      "nome": {
+        "tipo": "varchar(255)",
+        "descricao": "Texto descritivo ou nome"
+      },
+      "cnpj": {
+        "tipo": "varchar(30)",
+        "descricao": "CNPJ da Filial, unidade ou centro de custo"
+      },
+      "created_at": {
+        "tipo": "timestamp",
+        "descricao": "data de criação do registro"
+      },
+      "updated_at": {
+        "tipo": "timestamp",
+        "descricao": "data da última atualização do registro"
+      }
+    }
+  },
+  "centroProducoes": {
+    "descricao": "Tabela 'centroProducoes' utilizada para registro das estruturas de vendas da Corretora, unidades de negócio ou pontos de venda. Pode ser referenciada como EV.",
+    "colunas": {
+      "id": {
+        "tipo": "int(10)",
+        "descricao": "Identificador único da tabela (chave primária)"
+      },
+      "descricao": {
+        "tipo": "varchar(100)",
+        "descricao": "Texto descritivo ou nome"
+      },
+      "codEV": {
+        "tipo": "varchar(10)",
+        "descricao": "Código da EV dentro do TELEPORT, sistema comercial e multicalculo da Corretora. Somente para identificação no TELEPORT."
+      },
+      "sigla": {
+        "tipo": "varchar(10)",
+        "descricao": "Sigla da EV dentro do TELEPORT, sistema comercial e multicalculo da Corretora. Somente para identificação no TELEPORT."
+      },
+      "created_at": {
+        "tipo": "timestamp",
+        "descricao": "data de criação do registro"
+      },
+      "updated_at": {
+        "tipo": "timestamp",
+        "descricao": "data da última atualização do registro"
+      }
+    }
+  },
+  "detalhesObjetos": {
+    "descricao": "Tabela 'detalhesObjetos' utilizada para registrar as informações de seguros Automóvel. Somente Automóvel e Automóvel Frota.",
+    "colunas": {
+      "id": {
+        "tipo": "int(10)",
+        "descricao": "Identificador único da tabela (chave primária)."
+      },
+      "placa": {
+        "tipo": "varchar(10)",
+        "descricao": "Placa do veículo."
+      },
+      "chassi": {
+        "tipo": "varchar(20)",
+        "descricao": "Identificador do chassi do veículo."
+      },
+      "objeto": {
+        "tipo": "int(10)",
+        "descricao": "Id do Objeto (chave estrangeira)."
+      },
+      "created_at": {
+        "tipo": "timestamp",
+        "descricao": "Data de cadastro do registro."
+      },
+      "updated_at": {
+        "tipo": "timestamp",
+        "descricao": "Data de atualização do registro."
+      }
+    },
+    "relacoes": {
+      "objeto": {
+        "tabela": "objetos",
+        "coluna": "id",
+        "descricao": "Relaciona este item ao objeto correspondente."
+      }
+    }
+  },
+  "endossos": {
+    "descricao": "Tabela 'endossos' utilizada para controle das produções de endossos.",
+    "colunas": {
+      "id": {
+        "tipo": "int(10)",
+        "descricao": "Identificador único da tabela (chave primária)."
+      },
+      "vigencia": {
+        "tipo": "date",
+        "descricao": "Data da vigência inicial do endosso."
+      },
+      "vigenciaFinal": {
+        "tipo": "date",
+        "descricao": "Data da vigência final do endosso."
+      },
+      "cadastro": {
+        "tipo": "date",
+        "descricao": "Data de cadastro do endosso."
+      },
+      "segurado": {
+        "tipo": "int(10)",
+        "descricao": "Id do segurado responsável (chave estrangeira)."
+      },
+      "seguradora": {
+        "tipo": "varchar(30)",
+        "descricao": "Nome da cia de seguros.Seguradora responsavel pela emissão da apólice."
+      },
+      "objeto": {
+        "tipo": "int(10)",
+        "descricao": "Id do objeto da tabela objetos. Chave estrangeira. A descrição está na tabela 'objetos'."
+      },
+      "parcelas": {
+        "tipo": "varchar(2)",
+        "descricao": "Parcelamento do premio do seguro. Quantidade de vezes em que foi dividido o valor do prêmio total."
+      },
+      "comissao": {
+        "tipo": "decimal(10,2)",
+        "descricao": "Valor utilizado para calcular a comissão que a corretora recebe. Percentual de comissão.Ex: 20.00 será pode ser referido por 20%."
+      },
+      "tipoSeguro": {
+        "tipo": "enum('Renovação da própria corretora','Renovação de outra corretora','Seguro novo')",
+        "descricao": "Descrição do tipo de contratação seguro/apólice.Renovação da própria corretora (cliente da corretora que mantem o seguro anual),Renovação de outra corretora (cliente que ja tem seguro e muda de corretor), Seguro novo (geralmente primeiro seguro ou seguros vencidos a mais de 6 meses sem renovação)"
+      },
+      "produto": {
+        "tipo": "varchar(100)",
+        "descricao": "Descrição do ramo do seguro comercializado.Automóvel,Residencial,Empresarial,Vida,e outros"
+      },
+      "premioLq": {
+        "tipo": "decimal(13,2)",
+        "descricao": "Valor do seguro comercializado sem impostos e juros. Valor que deverá ser utilizado para calculo de comissões e repasses."
+      },
+      "status": {
+        "tipo": "int(11)",
+        "descricao": "Aqui teremos 4 valores para o status da apólice de endosso. 0 = Recusada,1 = Emitido, 2 = Em emissão, 4 = Cancelada."
+      },
+      "formaPG": {
+        "tipo": "int(11)",
+        "descricao": "Forma de pagamento escolhida para pagar o prêmio total. 1 = Boleto,2 = Débito em conta,3 = cheque,4=Cartão de crédito."
+      },
+      "proposta": {
+        "tipo": "varchar(25)",
+        "descricao": "Código identificador da proposta do seguro apólice/endosso. Cada Cia tem uma regra e não tem padrão definido."
+      },
+      "apoliceEndosso": {
+        "tipo": "varchar(55)",
+        "descricao": "Código identificador da apólice/endosso do seguro. Cada Cia tem uma regra e não tem padrão definido."
+      },
+      "endosso": {
+        "tipo": "varchar(10)",
+        "descricao": "Numero do endosso na apólice mãe/matriz.Uma apólice pode ter vários endossos."
+      },
+      "produtor": {
+        "tipo": "int(10)",
+        "descricao": "Identificador do produtor responsável na tabela produtores. A descrição se encontra na tabela produtores. Chave estrangeira."
+      },
+      "centroProducao": {
+        "tipo": "int(10)",
+        "descricao": "Identificador do cdc na tabela cdcs. A descrição se encontra na tabela cdcs. Chave estrangeira."
+      },
+      "statusPG": {
+        "tipo": "int(11)",
+        "descricao": "1 = Produção ja repassada ao Produtor e inserida na tabela folhas para que não seja repassada em duplicidade. 0 = disponível para pagamento."
+      },
+      "transTeleport": {
+        "tipo": "varchar(255)",
+        "descricao": "Sim = Transmitida pelo Teleport, Não = transmitida pela plataforma da seguradora."
+      },
+      "certificado": {
+        "tipo": "mediumint(9)",
+        "descricao": "Código único gerado pelo sistema Teleport. Pode ser utilizado como chave."
+      },
+      "item": {
+        "tipo": "mediumint(9)",
+        "descricao": "Item da apólice/endosso. Uma apólice pode ser agrupada com vários itens."
+      },
+      "situacao": {
+        "tipo": "int(11)",
+        "descricao": "Aqui teremos 4 valores para o status da apólice de endosso. 0 = Recusada,1 = Emitido, 2 = Em emissão, 4 = Cancelada."
+      },
+      "origem": {
+        "tipo": "varchar(30)",
+        "descricao": "Descrição da origem do seguro, de onde veio o lead ou cotação."
+      },
+      "tipoEndosso": {
+        "tipo": "varchar(80)",
+        "descricao": "Descrição do tipo de endosso. Cancelamento, Alteração de item e outros. Qualquer alteração na apólice resulta em um endosso."
+      },
+      "motivo": {
+        "tipo": "varchar(60)",
+        "descricao": "Descrição do motivo que gerou o endosso."
+      },
+      "inclusao": {
+        "tipo": "date",
+        "descricao": "Data de inclusão da proposta do endosso no TELEPORT"
+      },
+      "created_at": {
+        "tipo": "timestamp",
+        "descricao": "Data de criação do registro."
+      },
+      "updated_at": {
+        "tipo": "timestamp",
+        "descricao": "Data de alteração do registro."
+      }
+    },
+    "relacoes": {
+      "centroProducao": {
+        "tabela": "cdcs",
+        "coluna": "id",
+        "descricao": "Informa o centro de produção responsável."
+      },
+      "produtor": {
+        "tabela": "produtores",
+        "coluna": "id",
+        "descricao": "Indica o produtor responsável da Apólice/Endosso de seguro."
+      },
+      "segurado": {
+        "tabela": "segurados",
+        "coluna": "id",
+        "descricao": "Indica o segurado/cliente correspondente."
+      },
+      "objeto": {
+        "tabela": "objetos",
+        "coluna": "id",
+        "descricao": "Relaciona com o objeto segurado, o bem segurável da apólice/endosso."
+      }
+    }
+  },
+  "estipulantes": {
+    "descricao": "Tabela 'estipulantes' utilizada para controle e registro dos responsaveis pelas faturas de Beneficios.",
+    "colunas": {
+      "id": {
+        "tipo": "int(10)",
+        "descricao": "Identificador único da tabela"
+      },
+      "nomeFantasia": {
+        "tipo": "varchar(255)",
+        "descricao": "Nome comercial da empresa."
+      },
+      "razaoSocial": {
+        "tipo": "varchar(255)",
+        "descricao": "Razão social da empresa."
+      },
+      "cnpj": {
+        "tipo": "varchar(25)",
+        "descricao": "Identificador do CNPJ."
+      },
+      "cidade": {
+        "tipo": "varchar(100)",
+        "descricao": "Município do estipulante."
+      },
+      "uf": {
+        "tipo": "varchar(2)",
+        "descricao": "Estado de origem do estipulante."
+      },
+      "responsavel": {
+        "tipo": "varchar(100)",
+        "descricao": "Nome do responsavel pela empresa/estipulante."
+      },
+      "telComercial": {
+        "tipo": "varchar(20)",
+        "descricao": "Telefone Comercial."
+      },
+      "telMovel": {
+        "tipo": "varchar(20)",
+        "descricao": "Telefone móvel."
+      },
+      "created_at": {
+        "tipo": "timestamp",
+        "descricao": "Data de criação do registro."
+      },
+      "updated_at": {
+        "tipo": "timestamp",
+        "descricao": "Data de atualização do registro."
+      }
+    }
+  },
+  "faturas": {
+    "descricao": "Tabela 'faturas' utilizada para controle e registro das faturas relacionadas a produção da tabela beneficios.",
+    "colunas": {
+      "id": {
+        "tipo": "int(10)",
+        "descricao": "Identificador único da tabela"
+      },
+      "beneficio_id": {
+        "tipo": "int(10)",
+        "descricao": "Referência ao id do benefício vinculado. Chave estrangeira."
+      },
+      "vencimento": {
+        "tipo": "date",
+        "descricao": "Data relevante para vencimento da fatura."
+      },
+      "valorTotal": {
+        "tipo": "decimal(10,2)",
+        "descricao": "Valor total da fatura, incluindo impostos e juros."
+      },
+      "valorLiquido": {
+        "tipo": "decimal(10,2)",
+        "descricao": "Valor líquido da fatura, valor a ser considerado para calculos de repasses de comissão."
+      },
+      "created_at": {
+        "tipo": "timestamp",
+        "descricao": "Data de criação do registro."
+      },
+      "updated_at": {
+        "tipo": "timestamp",
+        "descricao": "Data da última atualização do registro."
+      }
+    },
+    "relacoes": {
+      "beneficio_id": {
+        "tabela": "beneficios",
+        "coluna": "id",
+        "descricao": "Informa o produto do setor de Beneficios."
+      }
+    }
+  },
+  "folhas": {
+    "descricao": "Tabela 'folhas' utilizada para controle e registro das folhas de pagamento mensais.Contém todas as produções repassadas e quitadas aos produtores.",
+    "colunas": {
+      "id": {
+        "tipo": "int(10)",
+        "descricao": "Identificador único da tabela"
+      },
+      "folha": {
+        "tipo": "varchar(255)",
+        "descricao": "Informação do mês e ano do pagamento. MM/AAAA."
+      },
+      "certificado": {
+        "tipo": "mediumint(9)",
+        "descricao": "Identificador único gerado pelo sistema TELEPORT.Somente em apólices agrpadas por vários itens, frota, esse valor se repete nos itens."
+      },
+      "item": {
+        "tipo": "mediumint(9)",
+        "descricao": "Número do item da apólice."
+      },
+      "idProducao": {
+        "tipo": "int(10)",
+        "descricao": "Referência ao registro de produção. Chave estrangeira. Id da tabela producoes."
+      },
+      "origem": {
+        "tipo": "int(11)",
+        "descricao": "1 = Apólice (tabela 'producoes'), 2 = Endosso (tabela 'endossos')."
+      },
+      "created_at": {
+        "tipo": "timestamp",
+        "descricao": "Data de criação do registro."
+      },
+      "updated_at": {
+        "tipo": "timestamp",
+        "descricao": "Data de atualização do registro."
+      }
+    },
+    "relacoes": {
+      "idProducao": {
+        "tabela": "producoes",
+        "coluna": "id",
+        "descricao": "Relaciona com a apólice/produção."
+      }
+    }
+  },
+  "grupo_subgrupo": {
+    "descricao": "Tabela 'grupo_subgrupo' utilizada como tabela pivot entre a tabela grupos e subgrupos.",
+    "colunas": {
+      "subgrupo_id": {
+        "tipo": "int(10)",
+        "descricao": "Id do subgrupo associado (chave primária)"
+      },
+      "grupo_id": {
+        "tipo": "int(10)",
+        "descricao": "Id do grupo associado (chave primária)"
+      }
+    },
+    "relacoes": {
+      "subgrupo_id": {
+        "tabela": "subgrupos",
+        "coluna": "id",
+        "descricao": "Informa o subgrupo de passivos ou ativos."
+      },
+      "grupo_id": {
+        "tabela": "grupos",
+        "coluna": "id",
+        "descricao": "Informa o grupo de passivos ou ativos."
+      }
+    }
+  },
+  "grupos": {
+    "descricao": "Tabela 'grupos' utilizada para controle e registro dos grupos de passivos e ativos.Despesas e Receitas.",
+    "colunas": {
+      "id": {
+        "tipo": "int(10)",
+        "descricao": "Identificador único da tabela. Chave primária"
+      },
+      "nome": {
+        "tipo": "varchar(255)",
+        "descricao": "Texto descritivo ou nome do grupo."
+      },
+      "classe": {
+        "tipo": "varchar(20)",
+        "descricao": "APENAS OS VALORES PASSIVO OU ATIVO.Tipo de grupo. Despesas ou Receitas."
+      },
+      "created_at": {
+        "tipo": "timestamp",
+        "descricao": "Data de criação do registro."
+      },
+      "updated_at": {
+        "tipo": "timestamp",
+        "descricao": "Data da última atualização do registro."
+      }
+    }
+  },
+  "objetos": {
+    "descricao": "Tabela 'objetos' utilizada para controle e registro dos itens de cada apólice e endosso.Descrição dos bens segurados.",
+    "colunas": {
+      "id": {
+        "tipo": "int(10)",
+        "descricao": "Identificador único da tabela"
+      },
+      "descricao": {
+        "tipo": "varchar(300)",
+        "descricao": "Texto descritivo ou nome do bem. Ex: Veículo, Imóvel, etc."
+      },
+      "item": {
+        "tipo": "varchar(3)",
+        "descricao": "Número do item."
+      },
+      "produto": {
+        "tipo": "varchar(60)",
+        "descricao": "Tipo do produto, por exemplo Automóvel, Residencial, Vida, Empresarial."
+      },
+      "certificado": {
+        "tipo": "int(10)",
+        "descricao": "Registro único de cada registro fornecido pelo sistema TELEPORT.Pode ser utilizado como chave."
+      },
+      "origem": {
+        "tipo": "int(10)",
+        "descricao": "Apólice = 1, Endosso = 2."
+      },
+      "created_at": {
+        "tipo": "timestamp",
+        "descricao": "Data de criação do registro."
+      },
+      "updated_at": {
+        "tipo": "timestamp",
+        "descricao": "Data da última atualização do registro."
+      }
+    }
+  },
+  "passivos": {
+    "descricao": "Tabela 'passivos' utilizada para controle e registro das despesas.",
+    "colunas": {
+      "id": {
+        "tipo": "int(10)",
+        "descricao": "Identificador único da tabela."
+      },
+      "nome": {
+        "tipo": "varchar(100)",
+        "descricao": "Texto descritivo ou nome."
+      },
+      "vencimento": {
+        "tipo": "date",
+        "descricao": "Data do vencimento da despesa."
+      },
+      "dataPG": {
+        "tipo": "date",
+        "descricao": "Data de pagamento da despesa."
+      },
+      "cdc": {
+        "tipo": "int(10)",
+        "descricao": "Centro de custo da despesa. Id do cdc referenciado na tabela cdcs."
+      },
+      "grupo": {
+        "tipo": "int(10)",
+        "descricao": "Grupo de passivos, despesas. Id do grupo referenciado na tabela grupos.(chave estrangeira)"
+      },
+      "subgrupo": {
+        "tipo": "int(10)",
+        "descricao": "Subgrupos de passivos , despesas. Id do grupo referenciado na tabela subgrupos.(chave estrangeira)"
+      },
+      "formaPG": {
+        "tipo": "varchar(80)",
+        "descricao": "Forma de pagamento da despesa. Ex: Boleto, Cheque, Transferência, etc."
+      },
+      "valor": {
+        "tipo": "decimal(10,2)",
+        "descricao": "Valor do passivo, despesa."
+      },
+      "valorPG": {
+        "tipo": "decimal(10,2)",
+        "descricao": "Valor pago do passivo, despesa."
+      },
+      "obs": {
+        "tipo": "varchar(250)",
+        "descricao": "Observação ou informações relevantes sobre a despesa."
+      },
+      "created_at": {
+        "tipo": "timestamp",
+        "descricao": "Data de criação do registro."
+      },
+      "updated_at": {
+        "tipo": "timestamp",
+        "descricao": "Data da última atualização do registro."
+      }
+    },
+    "relacoes": {
+      "cdc": {
+        "tabela": "cdcs",
+        "coluna": "id",
+        "descricao": "Relaciona com o centro de custo, unidade ou filial correspondente"
+      },
+      "subgrupo": {
+        "tabela": "subgrupos",
+        "coluna": "id",
+        "descricao": "Informa o subgrupo de passivos ou ativos."
+      },
+      "grupo": {
+        "tabela": "grupos",
+        "coluna": "id",
+        "descricao": "Informa o grupo de passivos ou ativos."
+      }
+    }
+  },
+  "producao_subproducao": {
+    "descricao": "Tabela 'producao_subproducao' utilizada como tabela pivot entre as tabelas producoes e subproducoes.",
+    "colunas": {
+      "producao_id": {
+        "tipo": "int(10)",
+        "descricao": "Referência ao registro de produção. Chave primaria"
+      },
+      "subproducao_id": {
+        "tipo": "int(10)",
+        "descricao": "Referência ao registro de subprodução. Chave primaria"
+      }
+    },
+    "relacoes": {
+      "producao_id": {
+        "tabela": "producoes",
+        "coluna": "id",
+        "descricao": "Identificação da produção. Id da tabela producoes."
+      },
+      "subproducao_id": {
+        "tabela": "subproducoes",
+        "coluna": "id",
+        "descricao": "Identificação da subprodução. Id da tabela subproducoes."
+      }
+    }    
+  },
+  "producoes": {
+    "descricao": "Tabela 'producoes' de produções de seguros, contendo prêmios e informações de produtos.",
+    "colunas": {
+      "id": {
+        "tipo": "int(10)",
+        "descricao": "Identificador único da tabela. Chave primária"
+      },
+      "vigencia": {
+        "tipo": "date",
+        "descricao": "Data da vigência inicial da apólice."
+      },
+      "vigenciaFinal": {
+        "tipo": "date",
+        "descricao": "Data da vigência final da apólice."
+      },
+      "cadastro": {
+        "tipo": "date",
+        "descricao": "Data de cadastro da apólice. YYYY-MM-DD"
+      },
+      "segurado": {
+        "tipo": "int(10)",
+        "descricao": "Id do segurado responsável (chave estrangeira)."
+      },
+      "seguradora": {
+        "tipo": "varchar(30)",
+        "descricao": "Nome da cia de seguros.Seguradora responsavel pela emissão da apólice."
+      },
+      "objeto": {
+        "tipo": "int(10)",
+        "descricao": "Campo da tabela"
+      },
+      "parcelas": {
+        "tipo": "varchar(2)",
+        "descricao": "Parcelamento do premio do seguro. Quantidade de vezes em que foi dividido o valor do prêmio total."
+      },
+      "comissao": {
+        "tipo": "decimal(10,2)",
+        "descricao": "Valor utilizado para calcular a comissão que a corretora recebe. Percentual de comissão.Ex: 20.00 será pode ser referido por 20%."
+      },
+      "tipoSeguro": {
+        "tipo": "enum('Renovação da própria corretora','Renovação de outra corretora','Seguro novo')",
+        "descricao": "Descrição do tipo de contratação seguro/apólice.Renovação da própria corretora (cliente da corretora que mantem o seguro anual),Renovação de outra corretora (cliente que ja tem seguro e muda de corretor), Seguro novo (geralmente primeiro seguro ou seguros vencidos a mais de 6 meses sem renovação)"
+      },
+      "produto": {
+        "tipo": "varchar(100)",
+        "descricao": "Descrição do ramo do seguro comercializado.Tipo de produto,Automóvel,Residencial,Empresarial,Vida,e outros"
+      },
+      "premioLq": {
+        "tipo": "decimal(13,2)",
+        "descricao": "Valor do seguro comercializado sem impostos e juros.Valor de prêmio. Valor que deverá ser utilizado para calculo de comissões e repasses."
+      },
+      "status": {
+        "tipo": "int(11)",
+        "descricao": "Aqui teremos 4 valores para o status da apólice. 0 = Recusada,1 = Emitido, 2 = Em emissão, 4 = Cancelada."
+      },
+      "formaPG": {
+        "tipo": "int(11)",
+        "descricao": "Forma de pagamento escolhida para pagar o prêmio total. 1 = Boleto,2 = Débito em conta,3 = cheque,4=Cartão de crédito."
+      },
+      "proposta": {
+        "tipo": "varchar(25)",
+        "descricao": "Código identificador da proposta do seguro apólice/endosso. Cada Cia tem uma regra e não tem padrão definido."
+      },
+      "apolice": {
+        "tipo": "varchar(10)",
+        "descricao": "Numero da apólice mãe/matriz."
+      },
+      "produtor": {
+        "tipo": "int(10)",
+        "descricao": "Identificador do produtor responsável na tabela produtores. A descrição se encontra na tabela produtores. Chave estrangeira."
+      },
+      "centroProducao": {
+        "tipo": "int(10)",
+        "descricao": "Identificador do cdc na tabela cdcs. A descrição se encontra na tabela cdcs. Chave estrangeira."
+      },
+      "statusPG": {
+        "tipo": "int(11)",
+        "descricao": "1 = Produção ja repassada ao Produtor e inserida na tabela folhas para que não seja repassada em duplicidade. 0 = disponível para pagamento."
+      },
+      "transTeleport": {
+        "tipo": "varchar(255)",
+        "descricao": "Sim = Transmitida pelo Teleport, Não = transmitida pela plataforma da seguradora."
+      },
+      "certificado": {
+        "tipo": "mediumint(9)",
+        "descricao": "Código único gerado pelo sistema Teleport. Pode ser utilizado como chave."
+      },
+      "item": {
+        "tipo": "mediumint(9)",
+        "descricao": "Item da apólice/endosso. Uma apólice pode ser agrupada com vários itens."
+      },
+      "situacao": {
+        "tipo": "int(11)",
+        "descricao": "Aqui teremos 4 valores para o status da apólice. 0 = Recusada,1 = Emitido, 2 = Em emissão, 4 = Cancelada."
+      },
+      "origem": {
+        "tipo": "varchar(30)",
+        "descricao": "Descrição da origem do seguro, de onde veio o lead ou cotação."
+      },
+      "inclusao": {
+        "tipo": "date",
+        "descricao": "Data de inclusão da proposta no TELEPORT"
+      },
+      "created_at": {
+        "tipo": "timestamp",
+        "descricao": "Data de criação do registro."
+      },
+      "updated_at": {
+        "tipo": "timestamp",
+        "descricao": "Data da última atualização do registro."
+      }
+    },
+    "relacoes": {
+      "centroProducao": {
+        "tabela": "cdcs",
+        "coluna": "id",
+        "descricao": "Informa o centro de produção responsável."
+      },
+      "produtor": {
+        "tabela": "produtores",
+        "coluna": "id",
+        "descricao": "Indica o produtor responsável da Apólice/Endosso de seguro."
+      },
+      "segurado": {
+        "tabela": "segurados",
+        "coluna": "id",
+        "descricao": "Indica o segurado/cliente correspondente."
+      },
+      "objeto": {
+        "tabela": "objetos",
+        "coluna": "id",
+        "descricao": "Relaciona com o objeto segurado, o bem segurável da apólice/endosso."
+      }
+    }
+  },
+  "produtoBeneficios": {
+    "descricao": "Tabela 'produtoBeneficios' utilizada para controle e registro dos produtos comercializados no setor de Beneficios.",
+    "colunas": {
+      "id": {
+        "tipo": "int(10)",
+        "descricao": "Identificador único da tabela. Chave primária."
+      },
+      "descricao": {
+        "tipo": "varchar(255)",
+        "descricao": "Texto descritivo ou nome do produto."
+      },
+      "cia": {
+        "tipo": "varchar(100)",
+        "descricao": "Nome da cia de seguros.Seguradora responsavel pela emissão da apólice."
+      },
+      "ramo": {
+        "tipo": "varchar(100)",
+        "descricao": "Vida, Saúde, Odonto ou Viagem."
+      },
+      "comissaoVitalicia": {
+        "tipo": "decimal(5,2)",
+        "descricao": "Valor utilizado para calcular a comissão que a corretora recebe. Percentual de comissão.Ex: 20.00 será pode ser referido por 20%."
+      },
+      "created_at": {
+        "tipo": "timestamp",
+        "descricao": "Data de criação do registro."
+      },
+      "updated_at": {
+        "tipo": "timestamp",
+        "descricao": "Data da última atualização do registro."
+      }
+    }
+  },
+  "produtores": {
+    "descricao": "Tabela 'produtores' utilizada para controle e registro dos produtores.",
+    "colunas": {
+      "id": {
+        "tipo": "int(10)",
+        "descricao": "Identificador único da tabela. Chave primária."
+      },
+      "nome": {
+        "tipo": "varchar(100)",
+        "descricao": "Texto descritivo ou nome."
+      },
+      "codTeleport": {
+        "tipo": "varchar(10)",
+        "descricao": "Cod do Produtor no sistema TELEPORT."
+      },
+      "created_at": {
+        "tipo": "timestamp",
+        "descricao": "Data de criação do registro."
+      },
+      "updated_at": {
+        "tipo": "timestamp",
+        "descricao": "Data da última atualização do registro."
+      }
+    }
+  },
+  "segurados": {
+    "descricao": "Tabela 'segurados' utilizada para controle e registro dos clientes.",
+    "colunas": {
+      "id": {
+        "tipo": "int(10)",
+        "descricao": "Identificador único da tabela. Chave primaria."
+      },
+      "nome": {
+        "tipo": "varchar(100)",
+        "descricao": "Nome do segurado."
+      },
+      "dataNascimento": {
+        "tipo": "date",
+        "descricao": "Data de nascimento no formato YYYY-MM-DD."
+      },
+      "sexo": {
+        "tipo": "varchar(30)",
+        "descricao": "Masculino ou Feminino."
+      },
+      "telResidencial": {
+        "tipo": "varchar(15",
+        "descricao": "telefone residencial."
+      },
+      "telComercial": {
+        "tipo": "varchar(15)",
+        "descricao": "Telefone Comercial"
+      },
+      "telOpcional": {
+        "tipo": "varchar(18)",
+        "descricao": "Telefone adicional"
+      },
+      "telMovel": {
+        "tipo": "varchar(15)",
+        "descricao": "Telefone Móvel."
+      },
+      "email": {
+        "tipo": "varchar(100)",
+        "descricao": "Email"
+      },
+      "emailComercial": {
+        "tipo": "varchar(100)",
+        "descricao": "Email comercial"
+      },
+      "registroDoc": {
+        "tipo": "varchar(30)",
+        "descricao": "CPF ou CNPJ."
+      },
+      "endereco": {
+        "tipo": "varchar(150)",
+        "descricao": "Endereço do cliente."
+      },
+      "num": {
+        "tipo": "varchar(10)",
+        "descricao": "Numero do endereço."
+      },
+      "bairro": {
+        "tipo": "varchar(100)",
+        "descricao": "Bairro do endereço"
+      },
+      "complemento": {
+        "tipo": "varchar(50)",
+        "descricao": "Complemento do endereço."
+      },
+      "cep": {
+        "tipo": "varchar(12)",
+        "descricao": "Cep do endereço."
+      },
+      "cidade": {
+        "tipo": "varchar(100)",
+        "descricao": "Cidade de residência do cliente."
+      },
+      "uf": {
+        "tipo": "varchar(2)",
+        "descricao": "Estado de residência do cliente"
+      },
+      "created_at": {
+        "tipo": "timestamp",
+        "descricao": "Data de criação do registro."
+      },
+      "updated_at": {
+        "tipo": "timestamp",
+        "descricao": "Data da última atualização do registro."
+      }
+    }
+  },
+  "subgrupos": {
+    "descricao": "Tabela 'subgrupos' utilizada para controle e registro dos subgrupos de ativos e passivos.",
+    "colunas": {
+      "id": {
+        "tipo": "int(10)",
+        "descricao": "Identificador único da tabela. Chave primaria."
+      },
+      "nome": {
+        "tipo": "varchar(255)",
+        "descricao": "Texto descritivo ou nome."
+      },
+      "created_at": {
+        "tipo": "timestamp",
+        "descricao": "Data de criação do registro."
+      },
+      "updated_at": {
+        "tipo": "timestamp",
+        "descricao": "Data da última atualização do registro."
+      }
+    }
+  },
+  "subproducoes": {
+    "descricao": "Tabela 'subproducoes' utilizada para controle e registro das subproduções dos produtores. Existe a prática de um produtor vender para um cliente da carteira de outro produtor caso seja necessário.",
+    "colunas": {
+      "id": {
+        "tipo": "int(10)",
+        "descricao": "Identificador único da tabela.Chave primária."
+      },
+      "produtor": {
+        "tipo": "int(10)",
+        "descricao": "Identificador do produtor responsável na tabela produtores. A descrição se encontra na tabela produtores. Chave estrangeira."
+      },
+      "producao": {
+        "tipo": "int(10)",
+        "descricao": "Identificação da produção. Id da tabela producoes."
+      },
+      "created_at": {
+        "tipo": "timestamp",
+        "descricao": "Data de criação do registro."
+      },
+      "updated_at": {
+        "tipo": "timestamp",
+        "descricao": "Data da última atualização do registro."
+      }
+    },
+    "relacoes": {
+      "produtor": {
+        "tabela": "produtores",
+        "coluna": "id",
+        "descricao": "Indica o produtor responsável da Apólice/Endosso de seguro."
+      },
+      "producao": {
+        "tabela": "producoes",
+        "coluna": "id",
+        "descricao": "Relaciona a este item a produção correspondente"
+      }
+    }
+  }
+}
