@@ -276,18 +276,19 @@ export async function handler(event) {
           5) Dates must be in 'YYYY-MM-DD'.
           6) Return SQL inside one markdown block. No explanations.
           7) Use exclusively the view vw_producao_completa for all queries. Do not use any other table.
-          8)When the answer involves a table (e.g., a list of records or grouped results), you MUST return it in valid JSON format (as an array of objects), inside the "observation" field. Do not use Markdown tables.
+          8)When the answer involves tabular data (e.g. list of top producers, grouped summaries, etc.), return the result as a valid JSON array of objects in the observation field.
 
-            Example of correct response format:
-
+            Example of correct format:
             [
               {{ "producer_name": "Andre Oliveira", "total_premium": 170775.11 }},
-              {{ "producer_name": "Cleide Marins", "total_premium": 135048.74 }}
+              {{ "producer_name": "Cleide Marins", "total_premium": 135048.74 }},
+              {{ "producer_name": "Élida Luchilla", "total_premium": 132198.54 }}
             ]
 
-            This allows the response to be used in charts and dashboards.
+            Do NOT use Markdown tables or pipe formatting. Only raw JSON arrays. This is required for chart and table rendering in the frontend.
 
           User: {input}
+
 
           Agent, what is your plan?          
           ${schemaContext}
