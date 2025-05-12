@@ -218,23 +218,27 @@ export async function handler(event) {
               }
             }
           
-            // ✅ Múltiplas linhas (tabela)
-            if (Array.isArray(raw) && raw.length > 1) {
-              const colunas = Object.keys(raw[0]);
-              const cabecalho = colunas.join(" | ");
-              const separador = colunas.map(() => "---").join(" | ");
-              const linhas = raw.map((linha, i) => {
-                const valores = colunas.map(col => {
-                  const valor = linha[col];
-                  return typeof valor === "number" ? formatarValor(valor) : valor;
-                });
-                return `${i + 1}. ${valores.join(" | ")}`;
-              });
+            // Múltiplas linhas (tabela)
+            //if (Array.isArray(raw) && raw.length > 1) {
+             // const colunas = Object.keys(raw[0]);
+             // const cabecalho = colunas.join(" | ");
+             // const separador = colunas.map(() => "---").join(" | ");
+              //const linhas = raw.map((linha, i) => {
+               // const valores = colunas.map(col => {
+                 // const valor = linha[col];
+                //  return typeof valor === "number" ? formatarValor(valor) : valor;
+               // });
+               // return `${i + 1}. ${valores.join(" | ")}`;
+             // });
+                       
+             // return `Final Answer:\n${cabecalho}\n${separador}\n${linhas.join("\n")}`;
+           // }
+
+           if (Array.isArray(raw) && raw.length > 1) {
+                return JSON.stringify(raw, null, 2); // retorno JSON puro
+              }
           
-              return `Final Answer:\n${cabecalho}\n${separador}\n${linhas.join("\n")}`;
-            }
-          
-            // ✅ Valor único com formatação
+            // Valor único com formatação
             if (Array.isArray(raw) && raw.length === 1) {
               return extrairValorNumericoJson(raw);
             }
@@ -276,16 +280,20 @@ export async function handler(event) {
           5) Dates must be in 'YYYY-MM-DD'.
           6) Return SQL inside one markdown block. No explanations.
           7) Use exclusively the view vw_producao_completa for all queries. Do not use any other table.
-          8)When the answer involves tabular data (e.g. list of top producers, grouped summaries, etc.), return the result as a valid JSON array of objects in the observation field.
+          8)When returning tabular data (like lists, group summaries, top 5, etc.), always respond with a JSON array of objects — not Markdown tables.
 
-            Example of correct format:
+            Correct format:
+
             [
-              {{ "producer_name": "Andre Oliveira", "total_premium": 170775.11 }},
-              {{ "producer_name": "Cleide Marins", "total_premium": 135048.74 }},
-              {{ "producer_name": "Élida Luchilla", "total_premium": 132198.54 }}
+              {{ "producer_name": "Élida Luchilla", "total_premium": 174326.09 }},
+              {{ "producer_name": "Lauany Amorim", "total_premium": 126701.90 }},
+              {{ "producer_name": "Cleide Marins", "total_premium": 125615.23 }},
+              {{ "producer_name": "Luana Pessanha", "total_premium": 100444.48 }},
+              {{ "producer_name": "Leandra Santos", "total_premium": 88084.87 }}
             ]
 
-            Do NOT use Markdown tables or pipe formatting. Only raw JSON arrays. This is required for chart and table rendering in the frontend.
+            The response must appear inside the 'observation' field as pure JSON, so it can be parsed and rendered in frontend tables and charts.
+
 
           User: {input}
 
