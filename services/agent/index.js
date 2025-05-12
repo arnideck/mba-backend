@@ -311,6 +311,27 @@ export async function handler(event) {
 
     const result = await executor.invoke({ input: question });
 
+    // Early return se última observation for um JSON parseável
+      try {
+        const ultima = result?.intermediateSteps?.slice(-1)[0]?.observation;
+        const parsed = JSON.parse(ultima);
+        if (Array.isArray(parsed)) {
+          return {
+            statusCode: 200,
+            headers: {
+              'Access-Control-Allow-Origin': '*',
+              'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+              'Access-Control-Allow-Methods': 'POST,OPTIONS',
+            },
+            body: JSON.stringify({
+              resposta: "Final Answer (parsed from observation)",
+              tabela: parsed,
+              raciocinio: result.intermediateSteps
+            }),
+          };
+        }
+      } catch {}
+
     // Se algum dos passos intermediários tiver um observation com "Final Answer", usamos ele
     let respostaFinal = result.output;
 
