@@ -281,8 +281,8 @@ export async function handler(event) {
             Example of correct response format:
 
             [
-              { "producer_name": "Andre Oliveira", "total_premium": 170775.11 },
-              { "producer_name": "Cleide Marins", "total_premium": 135048.74 }
+              {{ "producer_name": "Andre Oliveira", "total_premium": 170775.11 }},
+              {{ "producer_name": "Cleide Marins", "total_premium": 135048.74 }}
             ]
 
             This allows the response to be used in charts and dashboards.
