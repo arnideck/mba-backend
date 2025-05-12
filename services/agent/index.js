@@ -165,7 +165,7 @@ export async function handler(event) {
         body: JSON.stringify({ token: token, error: process.env.JWT_SECRET }),
       };
     }*/
-   
+
 
     if (!executor) {
       const { OPENAI_API_KEY } = await getCredentials();
@@ -279,9 +279,8 @@ export async function handler(event) {
           3) Always use premioLq for premium values.
           4) To filter automobiles, use produto LIKE '%auto%'.
           5) Dates must be in 'YYYY-MM-DD'.
-          6) Return SQL inside one markdown block. No explanations.
-          7) Use exclusively the view vw_producao_completa for all queries. Do not use any other table.
-          8)When returning tabular data (like lists, group summaries, top 5, etc.), always respond with a JSON array of objects — not Markdown tables.
+          6) Use exclusively the view vw_producao_completa for all queries. Do not use any other table.
+          7)When returning tabular data (like lists, group summaries, top 5, etc.), always respond with a JSON array of objects — not Markdown tables.
 
             Correct format:
 
