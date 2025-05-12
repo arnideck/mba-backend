@@ -188,10 +188,10 @@ export async function handler(event) {
             const cleanSql = sql.replace(/```sql|```/gi, "").trim();
 
             // Valida tabelas
-            const tabelasInvalidas = validarTabelas(cleanSql);
-            if (tabelasInvalidas.length > 0) {
-              return `Final Answer: As tabelas inválidas encontradas foram: ${tabelasInvalidas.join(", ")}. Use apenas tabelas definidas no schema_inspector.`;
-            }
+          //  const tabelasInvalidas = validarTabelas(cleanSql);
+            //if (tabelasInvalidas.length > 0) {
+              //return `Final Answer: As tabelas inválidas encontradas foram: ${tabelasInvalidas.join(", ")}. Use apenas tabelas definidas no schema_inspector.`;
+           // }
 
             // Valida colunas
             const colunasInvalidas = validarColunas(cleanSql);
