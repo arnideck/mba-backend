@@ -8,12 +8,14 @@ async function getJwtSecret() {
   if (jwtSecretCache) return jwtSecretCache;
 
   const client = new SecretsManagerClient({ region: "us-east-1" });
+
   const command = new GetSecretValueCommand({
-    SecretId: "JWT_SECRET", // Nome do segredo
+    SecretId: process.env.SECRET_NAME, // ✅ buscar o segredo principal
   });
 
   const response = await client.send(command);
   const secret = JSON.parse(response.SecretString);
+
   jwtSecretCache = secret.JWT_SECRET;
 
   return jwtSecretCache;
@@ -33,4 +35,5 @@ export async function verificarToken(token) {
     return null;
   }
 }
+
 
