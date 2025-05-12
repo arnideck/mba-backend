@@ -165,6 +165,7 @@ export async function handler(event) {
         body: JSON.stringify({ token: token, error: process.env.JWT_SECRET }),
       };
     }*/
+   
 
     if (!executor) {
       const { OPENAI_API_KEY } = await getCredentials();
