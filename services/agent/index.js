@@ -281,6 +281,8 @@ export async function handler(event) {
           5) Dates must be in 'YYYY-MM-DD'.
           6) Use exclusively the view vw_producao_completa for all queries. Do not use any other table.
           7)When returning tabular data (like lists, group summaries, top 5, etc.), always respond with a JSON array of objects — not Markdown tables.
+          8)When you successfully retrieve a tabular JSON result, return it as-is in the observation field and stop. You do not need to continue searching for a better answer.
+
 
             Correct format:
 
